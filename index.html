@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Family Tree</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="header-shell">
+      <header class="topbar">
+        <div class="header-title">Family Tree</div>
+      </header>
+
+      <nav class="topnav" aria-label="Pages">
+        <a class="nav-link active" href="./index.html">Home</a>
+        <a class="nav-link" href="./about.html">About</a>
+        <a class="nav-link" href="./contact.html">Contact</a>
+      </nav>
+    </div>
+
+    <main class="container">
+      <section class="hint">
+        <div>
+          Data change karne ke liye `app.js` me `PEOPLE` aur `ROOT_ID` edit kar dein.
+        </div>
+      </section>
+
+      <section class="tree-wrap">
+        <div id="treeRoot" class="tree" aria-label="Family tree"></div>
+      </section>
+    </main>
+
+    <nav class="bottombar" aria-label="Menu">
+      <button id="searchToggleBtn" class="btn btn-ghost" type="button">Search</button>
+      <div id="searchWrap" class="search-wrap hidden" role="group" aria-label="Search input">
+        <input id="searchInput" type="search" placeholder="Name..." autocomplete="off" />
+        <button id="searchClearBtn" class="btn btn-ghost btn-xs" type="button">Clear</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="group" role="group" aria-label="Zoom">
+        <button id="zoomOutBtn" class="btn btn-ghost btn-xs" type="button">-</button>
+        <label class="zoom-inline">
+          <span>Zoom</span>
+          <input id="zoomRange" type="range" min="60" max="140" value="100" />
+        </label>
+        <button id="zoomInBtn" class="btn btn-ghost btn-xs" type="button">+</button>
+        <button id="zoomResetBtn" class="btn btn-ghost btn-xs" type="button">Reset</button>
+      </div>
+
+      <button id="themeToggleBtn" class="btn btn-ghost" type="button">Theme</button>
+      <button id="expandAllBtn" class="btn" type="button">Expand</button>
+      <button id="collapseAllBtn" class="btn btn-ghost" type="button">Collapse</button>
+    </nav>
+
+    <div id="detailsModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Person details">
+      <div class="modal-backdrop" data-close="1"></div>
+      <div class="modal-card" role="document">
+        <div class="modal-head">
+          <div id="modalTitle" class="modal-title">Person details</div>
+          <button id="closeModalBtn" class="btn btn-ghost btn-xs" type="button">Close</button>
+        </div>
+        <div id="details" class="details empty">Kisi person card par click karein.</div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>Built with plain HTML/CSS/JS (no internet needed).</span>
+    </footer>
+
+    <script src="./site.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
