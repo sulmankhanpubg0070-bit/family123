@@ -3,117 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خاندانی درخت - Family Tree</title>
+    <title>خاندانی درخت - ڈیزائن منتخب کریں</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .design-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .design-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .design-preview {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            font-weight: bold;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .design-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .design-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .design-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .design-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .design-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .design-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .design-7 { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+        .design-8 { background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); }
+
+        .design-info {
+            padding: 20px;
+        }
+
+        .design-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .design-desc {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .design-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .design-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        a { text-decoration: none; }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="header-section">
-            <div class="emoji">🌳</div>
-            <h1>خاندانی درخت</h1>
-            <h2>Family Tree</h2>
+        <div class="header">
+            <h1>🌳 خاندانی درخت</h1>
+            <p>اپنا پسندیدہ ڈیزائن منتخب کریں</p>
         </div>
 
-        <div class="tree-container">
-            <!-- Level 1: Grandfather -->
-            <div class="tree-level level-1">
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">احمد علی</div>
-                        <div class="person-relation">دادا جان 👴</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1945 - 2010</p>
-                    </div>
+        <div class="designs-grid">
+            <!-- Design 1: Modern Circles -->
+            <div class="design-card">
+                <div class="design-preview design-1">◯◯◯</div>
+                <div class="design-info">
+                    <div class="design-title">جدید حلقہ</div>
+                    <div class="design-desc">خوبصورت گول کارڈز کے ساتھ جدید ڈیزائن</div>
+                    <a href="design1.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
             </div>
 
-            <!-- Level 2: Parents & Uncles/Aunts -->
-            <div class="tree-level level-2">
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">علی خان</div>
-                        <div class="person-relation">ابو 👨</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1970</p>
-                    </div>
-                </div>
-
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">محمد حسن</div>
-                        <div class="person-relation">چاچا 👨</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1972</p>
-                    </div>
-                </div>
-
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">فاطمہ خانم</div>
-                        <div class="person-relation">خالہ 👩</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1968</p>
-                    </div>
+            <!-- Design 2: Timeline -->
+            <div class="design-card">
+                <div class="design-preview design-2">⊢─→</div>
+                <div class="design-info">
+                    <div class="design-title">ٹائم لائن</div>
+                    <div class="design-desc">وقت کی ترتیب میں خاندانی درخت</div>
+                    <a href="design2.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
             </div>
 
-            <!-- Level 3: Children/Cousins -->
-            <div class="tree-level level-3">
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">احمد</div>
-                        <div class="person-relation">بھائی 👦</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1995</p>
-                    </div>
+            <!-- Design 3: Tree Branches -->
+            <div class="design-card">
+                <div class="design-preview design-3">🌳</div>
+                <div class="design-info">
+                    <div class="design-title">درخت شاخیں</div>
+                    <div class="design-desc">اصل درخت جیسا ڈیزائن</div>
+                    <a href="design3.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
+            </div>
 
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">علیہ</div>
-                        <div class="person-relation">بہن 👧</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1998</p>
-                    </div>
+            <!-- Design 4: Grid Cards -->
+            <div class="design-card">
+                <div class="design-preview design-4">▦▦▦</div>
+                <div class="design-info">
+                    <div class="design-title">گرڈ کارڈز</div>
+                    <div class="design-desc">خوبصورت مربع کارڈز میں ترتیب</div>
+                    <a href="design4.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
+            </div>
 
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">حسن</div>
-                        <div class="person-relation">کزن 👦</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 1996</p>
-                    </div>
+            <!-- Design 5: Minimalist -->
+            <div class="design-card">
+                <div class="design-preview design-5">■ ■ ■</div>
+                <div class="design-info">
+                    <div class="design-title">سادہ اور صاف</div>
+                    <div class="design-desc">منیمیلسٹ انداز میں سادہ ڈیزائن</div>
+                    <a href="design5.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
+            </div>
 
-                <div class="person-card">
-                    <div class="person-circle">
-                        <div class="person-name">عائشہ</div>
-                        <div class="person-relation">کزن 👧</div>
-                    </div>
-                    <div class="person-info">
-                        <p>📅 2000</p>
-                    </div>
+            <!-- Design 6: Dark Mode -->
+            <div class="design-card">
+                <div class="design-preview design-6">◆◆◆</div>
+                <div class="design-info">
+                    <div class="design-title">سیاہ تھیم</div>
+                    <div class="design-desc">رات میں استعمال کے لیے سیاہ ڈیزائن</div>
+                    <a href="design6.html"><button class="design-btn">دیکھیں</button></a>
+                </div>
+            </div>
+
+            <!-- Design 7: Colorful Boxes -->
+            <div class="design-card">
+                <div class="design-preview design-7">□ ◇ ◆</div>
+                <div class="design-info">
+                    <div class="design-title">رنگین باکسز</div>
+                    <div class="design-desc">ہر فرد کے لیے علیحدہ رنگ</div>
+                    <a href="design7.html"><button class="design-btn">دیکھیں</button></a>
+                </div>
+            </div>
+
+            <!-- Design 8: 3D Effect -->
+            <div class="design-card">
+                <div class="design-preview design-8">🎲</div>
+                <div class="design-info">
+                    <div class="design-title">3D اثرات</div>
+                    <div class="design-desc">3D شیڈو اور گہرائی والا ڈیزائن</div>
+                    <a href="design8.html"><button class="design-btn">دیکھیں</button></a>
                 </div>
             </div>
         </div>
 
         <div class="footer">
-            <div class="emoji">✨</div>
-            <p>اپنے خاندان کی تاریخ محفوظ رکھیں</p>
-            <p class="footer-note">Preserve your family history with love</p>
-            <p style="margin-top: 15px; font-size: 0.85em;">💡 تمام نام اور تاریخیں اپنی مرضی سے بدلیں</p>
+            <p>💡 کسی بھی ڈیزائن کو منتخب کریں اور دیکھیں</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">جو ڈیزائن پسند آ جائے اس کو اپنے نام سے اپڈیٹ کریں</p>
         </div>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
