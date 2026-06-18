@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ڈیزائن 7 - رنگین باکسز</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 { text-align: center; color: white; margin-bottom: 40px; font-size: 2.5em; }
+        .back-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .member {
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .member:hover { transform: translateY(-8px); }
+        .m1 { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%); }
+        .m2 { background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%); }
+        .m3 { background: linear-gradient(135deg, #FFD93D 0%, #FFA502 100%); }
+        .m4 { background: linear-gradient(135deg, #6C63FF 0%, #9F7AEA 100%); }
+        .m5 { background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%); }
+        .m6 { background: linear-gradient(135deg, #00D4FF 0%, #0099FF 100%); }
+        .m7 { background: linear-gradient(135deg, #43E97B 0%, #38F9D7 100%); }
+        .m8 { background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%); }
+        .name { font-size: 1.1em; margin-bottom: 5px; }
+        .relation { font-size: 0.85em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← واپس جائیں</a>
+        <h1>🎨 ڈیزائن 7: رنگین باکسز</h1>
+        
+        <div class="members">
+            <div class="member m1">
+                <div class="name">احمد علی</div>
+                <div class="relation">دادا جان 👴</div>
+            </div>
+            <div class="member m2">
+                <div class="name">علی خان</div>
+                <div class="relation">ابو 👨</div>
+            </div>
+            <div class="member m3">
+                <div class="name">محمد حسن</div>
+                <div class="relation">چاچا 👨</div>
+            </div>
+            <div class="member m4">
+                <div class="name">فاطمہ خانم</div>
+                <div class="relation">خالہ 👩</div>
+            </div>
+            <div class="member m5">
+                <div class="name">احمد</div>
+                <div class="relation">بھائی 👦</div>
+            </div>
+            <div class="member m6">
+                <div class="name">علیہ</div>
+                <div class="relation">بہن 👧</div>
+            </div>
+            <div class="member m7">
+                <div class="name">حسن</div>
+                <div class="relation">کزن 👦</div>
+            </div>
+            <div class="member m8">
+                <div class="name">عائشہ</div>
+                <div class="relation">کزن 👧</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ڈیزائن 6 - سیاہ تھیم</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a1a1a;
+            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #222;
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid #333;
+        }
+        h1 { text-align: center; color: #00d4ff; margin-bottom: 40px; font-size: 2.5em; }
+        .back-btn {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .level {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+        .member {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: #1a1a1a;
+            padding: 20px 25px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 140px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+        .member:hover {
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            transform: scale(1.1);
+        }
+        .name { font-size: 1.1em; margin-bottom: 5px; }
+        .relation { font-size: 0.85em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← واپس جائیں</a>
+        <h1>🌙 ڈیزائن 6: سیاہ تھیم</h1>
+        
+        <div class="level">
+            <div class="member">
+                <div class="name">احمد علی</div>
+                <div class="relation">دادا جان 👴</div>
+            </div>
+        </div>
+
+        <div class="level">
+            <div class="member">
+                <div class="name">علی خان</div>
+                <div class="relation">ابو 👨</div>
+            </div>
+            <div class="member">
+                <div class="name">محمد حسن</div>
+                <div class="relation">چاچا 👨</div>
+            </div>
+            <div class="member">
+                <div class="name">فاطمہ خانم</div>
+                <div class="relation">خالہ 👩</div>
+            </div>
+        </div>
+
+        <div class="level">
+            <div class="member">
+                <div class="name">احمد</div>
+                <div class="relation">بھائی 👦</div>
+            </div>
+            <div class="member">
+                <div class="name">علیہ</div>
+                <div class="relation">بہن 👧</div>
+            </div>
+            <div class="member">
+                <div class="name">حسن</div>
+                <div class="relation">کزن 👦</div>
+            </div>
+            <div class="member">
+                <div class="name">عائشہ</div>
+                <div class="relation">کزن 👧</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
