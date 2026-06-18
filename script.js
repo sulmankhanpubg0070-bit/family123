@@ -1,14 +1,9 @@
-// Family Tree Modern Features
-
 document.addEventListener('DOMContentLoaded', function() {
     const personCircles = document.querySelectorAll('.person-circle');
     
-    // Add hover effects and animations
     personCircles.forEach((circle, index) => {
-        // Stagger animation on load
         circle.style.animationDelay = (index * 0.1) + 's';
         
-        // Interactive click effect
         circle.addEventListener('click', function() {
             this.style.transform = 'scale(1.2) rotateZ(10deg)';
             setTimeout(() => {
@@ -16,17 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 150);
         });
 
-        // Add particle effect on hover
         circle.addEventListener('mouseenter', function() {
             createParticles(this);
         });
     });
 
-    // Animate on scroll
     observeElements();
 });
 
-// Create floating particles on hover
 function createParticles(element) {
     const particleCount = 6;
     const rect = element.getBoundingClientRect();
@@ -48,7 +40,6 @@ function createParticles(element) {
         
         document.body.appendChild(particle);
         
-        // Animate particle
         const angle = (Math.PI * 2 * i) / particleCount;
         const velocity = 3;
         const vx = Math.cos(angle) * velocity;
@@ -77,7 +68,6 @@ function createParticles(element) {
     }
 }
 
-// Intersection Observer for scroll animations
 function observeElements() {
     const options = {
         threshold: 0.1,
@@ -92,13 +82,12 @@ function observeElements() {
             }
         });
     }, options);
-    
+
     document.querySelectorAll('.person-card').forEach(card => {
         observer.observe(card);
     });
 }
 
-// Function to edit family member
 function editMember(name, relation) {
     const newName = prompt('نیا نام (New Name):', name);
     if (newName) {
@@ -106,7 +95,6 @@ function editMember(name, relation) {
     }
 }
 
-// Function to add new member
 function addNewMember(levelClass, name, relation) {
     const newCard = document.createElement('div');
     newCard.className = 'person-card';
@@ -123,7 +111,6 @@ function addNewMember(levelClass, name, relation) {
     const levelDiv = document.querySelector('.' + levelClass);
     if (levelDiv) {
         levelDiv.appendChild(newCard);
-        // Re-attach event listeners to new element
         const newCircle = newCard.querySelector('.person-circle');
         newCircle.addEventListener('mouseenter', function() {
             createParticles(this);
