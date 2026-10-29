@@ -1,0 +1,8 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="hdr"></div><main><div class="stat" id="st"></div><div class="box" style="margin-top:14px"><h3>Sab members</h3><table id="tb"></table></div></main>
+<script src="common.js"></script><script>
+header('stats');const d=getData();
+const kids=id=>d.filter(x=>x.father==id).length;
+document.getElementById('st').innerHTML=`<div><b>${d.length}</b>Total members</div><div><b>${d.filter(x=>x.gender=='M').length}</b>Male</div><div><b>${d.filter(x=>x.gender=='F').length}</b>Female</div><div><b>${d.filter(x=>!x.father).length}</b>Root members</div>`;
+document.getElementById('tb').innerHTML=d.map(m=>`<tr><td>${m.name}</td><td>${m.gender=='F'?'F':'M'}</td><td>${kids(m.id)} bachay</td></tr>`).join('');
+</script></body></html>

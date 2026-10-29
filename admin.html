@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="hdr"></div><main>
+<div class="box" id="login"><h3>Admin login</h3><input id="pw" type="password" placeholder="Password"><button class="btn" onclick="go()">Login</button></div>
+<div id="panel" style="display:none">
+<div class="box"><h3>Naya member</h3><input id="nm" placeholder="Naam"><select id="fa"></select><select id="ge"><option value="M">Male</option><option value="F">Female</option></select><button class="btn g" onclick="add()">Add member</button></div>
+<div class="box"><h3>Members</h3><table id="tb"></table></div>
+<div class="box"><h3>Data import</h3><input type="file" id="fi" accept=".json"></div></div></main>
+<script src="common.js"></script><script>
+header('');let d=getData();
+function go(){if(pw.value==PASS){login.style.display='none';panel.style.display='block';draw()}else alert('Ghalat password')}
+function draw(){fa.innerHTML='<option value="">Koi father nahi (root)</option>'+d.map(m=>`<option value="${m.id}">${m.name} ka beta/beti</option>`).join('');
+tb.innerHTML=d.map(m=>`<tr><td>${m.name}</td><td><button class="btn r" onclick="del(${m.id})">Delete</button></td></tr>`).join('')}
+function add(){if(!nm.value.trim())return;d.push({id:Date.now(),name:nm.value.trim(),father:fa.value?+fa.value:null,gender:ge.value});saveData(d);nm.value='';draw()}
+function del(id){if(!confirm('Delete karein?'))return;d=d.filter(x=>x.id!=id).map(x=>x.father==id?{...x,father:null}:x);saveData(d);draw()}
+fi.onchange=e=>{const r=new FileReader();r.onload=()=>{try{d=JSON.parse(r.result);saveData(d);draw();alert('Import ho gaya')}catch(x){alert('File sahi nahi')}};r.readAsText(e.target.files[0])};
+</script></body></html>
