@@ -1,10 +1,10 @@
 
 <!doctype html>
-<html lang="ur" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Family Shajra — فیملی کا شجرہ</title>
+<title>Family Shajra — Family History Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,6 +26,8 @@ body {
   background-color: #f1f5f9;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   color: #1e293b;
+  direction: ltr;
+  text-align: left;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -109,7 +111,7 @@ body {
 }
 </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col dir-ltr text-left">
 
 <!-- Top Header Bar -->
 <header class="top-header text-white sticky top-0 z-50 shadow-md">
@@ -132,7 +134,7 @@ body {
 
   <!-- Secondary Icon Nav Bar -->
   <nav class="sub-nav border-t border-slate-800 text-slate-300 text-xs md:text-sm">
-    <div class="max-w-6xl mx-auto px-4 flex items-center justify-around md:justify-start md:gap-8 py-2">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-start gap-4 md:gap-8 py-2 overflow-x-auto">
       <button onclick="switchTab('treeView')" class="nav-tab active flex items-center gap-1.5 px-3 py-1 rounded hover:text-white hover:bg-slate-800 transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#2ecc71]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 00-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         <span>Home</span>
@@ -161,7 +163,7 @@ body {
     
     <!-- Root Selector Dropdown -->
     <div class="w-full">
-      <select id="rootSelect" class="w-full bg-slate-50 border border-slate-300 text-slate-800 font-medium text-sm md:text-base rounded-lg p-2.5 focus:ring-2 focus:ring-[#2ecc71] focus:border-[#2ecc71] outline-none transition">
+      <select id="rootSelect" class="w-full bg-slate-50 border border-slate-300 text-slate-800 font-medium text-sm md:text-base rounded-lg p-2.5 focus:ring-2 focus:ring-[#2ecc71] focus:border-[#2ecc71] outline-none transition text-left">
         <option value="">Error loading data / No root member</option>
       </select>
     </div>
@@ -195,7 +197,7 @@ body {
     </div>
   </div>
 
-  <!-- Urdu Heading Section -->
+  <!-- Heading Section -->
   <div class="text-center my-2">
     <div class="inline-flex items-center gap-2">
       <!-- Tree Icon -->
@@ -215,13 +217,13 @@ body {
     <!-- Dot Grid Canvas Area -->
     <div id="treeCanvas" class="dot-grid-pattern w-full flex-1 overflow-auto p-6 flex items-center justify-center min-h-[380px]">
       
-      <!-- Urdu Placeholder / Empty State -->
+      <!-- Placeholder / Empty State -->
       <div id="treePlaceholder" class="text-center px-6 py-12 max-w-md">
         <p class="urdu-font text-xl md:text-2xl text-slate-600 leading-relaxed">
           فیملی دیکھنے کے لیے اوپر سے کوئی روٹ (بنیادی ممبر) منتخب کریں۔
         </p>
         <button onclick="openAddMemberModal()" class="mt-4 inline-flex items-center gap-2 bg-[#2ecc71] text-white px-4 py-2 rounded-lg font-semibold text-sm shadow hover:bg-emerald-600 transition">
-          <span>+ نیا ممبر شامل کریں</span>
+          <span>+ Add New Member</span>
         </button>
       </div>
 
@@ -234,7 +236,7 @@ body {
 </main>
 
 <!-- Quick Action FAB (Mobile Add Member Button) -->
-<button onclick="openAddMemberModal()" class="fixed bottom-6 left-6 z-40 bg-[#2ecc71] text-white p-4 rounded-full shadow-lg hover:bg-emerald-600 active:scale-90 transition flex items-center justify-center" title="Add Member">
+<button onclick="openAddMemberModal()" class="fixed bottom-6 right-6 z-40 bg-[#2ecc71] text-white p-4 rounded-full shadow-lg hover:bg-emerald-600 active:scale-90 transition flex items-center justify-center" title="Add Member">
   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
 </button>
 
@@ -249,67 +251,65 @@ body {
     </div>
 
     <!-- Modal Form Body -->
-    <form id="memberForm" class="p-5 overflow-y-auto space-y-3 text-right" dir="rtl">
+    <form id="memberForm" class="p-5 overflow-y-auto space-y-3 text-left" dir="ltr">
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">پورا نام (Full Name) *</label>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Full Name / پورا نام *</label>
         <input id="memberName" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-[#2ecc71] outline-none">
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">رشتہ (Relation/Role) *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Relation / Role *</label>
           <select id="memberRelation" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#2ecc71]">
-            <option>Walid / والد</option>
-            <option>Walida / والدہ</option>
-            <option>Beta / بیٹا</option>
-            <option>Beti / بیٹی</option>
-            <option>Bhai / بھائی</option>
-            <option>Behan / بہن</option>
-            <option>Shohar / شوہر</option>
-            <option>Biwi / بیوی</option>
-            <option>Dada / دادا</option>
-            <option>Dadi / دادی</option>
-            <option>Nana / نانا</option>
-            <option>Nani / نانی</option>
+            <option>Father / والد</option>
+            <option>Mother / والدہ</option>
+            <option>Son / بیٹا</option>
+            <option>Daughter / بیٹی</option>
+            <option>Brother / بھائی</option>
+            <option>Sister / بہن</option>
+            <option>Husband / شوہر</option>
+            <option>Wife / بیوی</option>
+            <option>Grandfather / دادا</option>
+            <option>Grandmother / دادی</option>
             <option>Other / دیگر</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">والد / بنیادی ربط (Parent)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Parent / Root link</label>
           <select id="memberParent" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-[#2ecc71]">
-            <option value="">Root (سرکردہ / بنیادی ممبر)</option>
+            <option value="">Root / Top ancestor</option>
           </select>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ پیدائش (Birth Year)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Birth Year</label>
           <input id="memberBirth" placeholder="e.g. 1965" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">تاریخ وفات (Death Year)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Death Year</label>
           <input id="memberDeath" placeholder="e.g. 2020" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
         </div>
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">مقام / شہر (City / Place)</label>
+        <label class="block text-xs font-bold text-slate-700 mb-1">City / Place</label>
         <input id="memberPlace" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">تفصیلات / یادداشت (Notes)</label>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Notes / Life Story</label>
         <textarea id="memberNotes" rows="2" class="w-full border border-slate-300 rounded-lg p-2 text-sm"></textarea>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-2 pt-3">
         <button type="submit" class="flex-1 bg-[#2ecc71] hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-sm transition">
-          محفوظ کریں (Save)
+          Save Member
         </button>
         <button type="button" onclick="closeAddMemberModal()" class="bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-lg text-sm hover:bg-slate-300">
-          منسوخ (Cancel)
+          Cancel
         </button>
       </div>
     </form>
@@ -446,4 +446,197 @@ function buildTreeNodeHTML(member) {
 
   return `
     <div class="tree-branch">
-      <div class="tree-node bg-white border border-emerald-400 rounded-xl
+      <div class="tree-node bg-white border border-emerald-400 rounded-xl p-3 shadow-sm min-w-[150px] text-center relative z-10 my-2">
+        <div class="w-10 h-10 bg-emerald-100 text-[#2ecc71] font-bold rounded-full flex items-center justify-center mx-auto mb-1 text-sm border border-emerald-300">
+          ${member.name ? member.name.trim().charAt(0) : '?'}
+        </div>
+        <div class="font-bold text-slate-800 text-sm md:text-base urdu-font">${member.name}</div>
+        <div class="text-xs text-slate-500">${member.relation || ''}</div>
+        ${member.birth ? `<div class="text-[10px] text-slate-400">b. ${member.birth} ${member.death ? `- d. ${member.death}` : ''}</div>` : ''}
+        
+        <div class="flex items-center justify-center gap-2 mt-2 pt-2 border-t border-slate-100 text-xs">
+          <button onclick="editMember('${member.id}')" class="text-blue-500 hover:underline">Edit</button>
+          <button onclick="deleteMember('${member.id}')" class="text-red-500 hover:underline">Delete</button>
+        </div>
+      </div>
+      ${childrenHTML}
+    </div>
+  `;
+}
+
+// Event Listeners
+document.getElementById('rootSelect').addEventListener('change', renderTree);
+
+// Zoom Controls
+document.getElementById('zoomIn').addEventListener('click', () => {
+  currentZoom = Math.min(currentZoom + 0.15, 2);
+  applyZoom();
+});
+document.getElementById('zoomOut').addEventListener('click', () => {
+  currentZoom = Math.max(currentZoom - 0.15, 0.5);
+  applyZoom();
+});
+document.getElementById('zoomReset').addEventListener('click', () => {
+  currentZoom = 1;
+  applyZoom();
+});
+
+function applyZoom() {
+  const area = document.getElementById('treeRenderArea');
+  area.style.transform = `scale(${currentZoom})`;
+}
+
+// Toggle Horizontal / Vertical Layout
+document.getElementById('toggleLayoutBtn').addEventListener('click', () => {
+  isHorizontal = !isHorizontal;
+  const area = document.getElementById('treeRenderArea');
+  const btnText = document.getElementById('layoutBtnText');
+  
+  if (isHorizontal) {
+    area.classList.add('horizontal-tree');
+    btnText.textContent = 'Vertical';
+  } else {
+    area.classList.remove('horizontal-tree');
+    btnText.textContent = 'Horizontal';
+  }
+});
+
+// Save Tree as Image using html2canvas
+document.getElementById('saveImgBtn').addEventListener('click', () => {
+  const canvasArea = document.getElementById('treeCanvas');
+  html2canvas(canvasArea, { backgroundColor: '#f8fafc' }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'family-shajra.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+});
+
+// Modals Handling
+function openAddMemberModal() {
+  editingId = null;
+  document.getElementById('memberForm').reset();
+  document.getElementById('formTitle').textContent = 'Add Family Member';
+  document.getElementById('memberModal').classList.remove('hidden');
+}
+
+function closeAddMemberModal() {
+  document.getElementById('memberModal').classList.add('hidden');
+}
+
+document.getElementById('memberForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const name = document.getElementById('memberName').value.trim();
+  const relation = document.getElementById('memberRelation').value;
+  const parent = document.getElementById('memberParent').value;
+  const birth = document.getElementById('memberBirth').value.trim();
+  const death = document.getElementById('memberDeath').value.trim();
+  const place = document.getElementById('memberPlace').value.trim();
+  const notes = document.getElementById('memberNotes').value.trim();
+
+  if (editingId) {
+    const index = familyData.findIndex(m => m.id === editingId);
+    if (index !== -1) {
+      familyData[index] = { ...familyData[index], name, relation, parent, birth, death, place, notes };
+    }
+  } else {
+    const newMember = {
+      id: Date.now().toString(),
+      name, relation, parent, birth, death, place, notes
+    };
+    familyData.push(newMember);
+  }
+
+  saveData();
+  closeAddMemberModal();
+});
+
+function editMember(id) {
+  const member = familyData.find(m => m.id === id);
+  if (!member) return;
+
+  editingId = id;
+  document.getElementById('memberName').value = member.name || '';
+  document.getElementById('memberRelation').value = member.relation || 'Beta / بیٹا';
+  document.getElementById('memberParent').value = member.parent || '';
+  document.getElementById('memberBirth').value = member.birth || '';
+  document.getElementById('memberDeath').value = member.death || '';
+  document.getElementById('memberPlace').value = member.place || '';
+  document.getElementById('memberNotes').value = member.notes || '';
+
+  document.getElementById('formTitle').textContent = 'Edit Family Member';
+  document.getElementById('memberModal').classList.remove('hidden');
+}
+
+function deleteMember(id) {
+  if (confirm('Are you sure you want to delete this member?')) {
+    familyData = familyData.filter(m => m.id !== id && m.parent !== id);
+    saveData();
+  }
+}
+
+// Admin Panel Toggle
+document.getElementById('adminBtn').addEventListener('click', () => {
+  document.getElementById('adminModal').classList.remove('hidden');
+});
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.add('hidden');
+}
+
+// Export / Import JSON
+function exportJSON() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", "family_shajra_backup.json");
+  dlAnchorElem.click();
+}
+
+function importJSON(event) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      if (Array.isArray(importedData)) {
+        familyData = importedData;
+        saveData();
+        alert('Data restored successfully!');
+        closeAdminModal();
+      }
+    } catch (err) {
+      alert('Invalid JSON file format.');
+    }
+  };
+  reader.readAsText(event.target.files[0]);
+}
+
+function clearAllData() {
+  if (confirm('This will wipe all locally stored family tree data. Continue?')) {
+    familyData = [];
+    saveData();
+    closeAdminModal();
+  }
+}
+
+function switchTab(tabName) {
+  if (tabName === 'statsView') {
+    alert(`Family Statistics:\nTotal Members: ${familyData.length}\nGenerations: ${calculateGenerations()}`);
+  } else if (tabName === 'aboutView') {
+    alert('Family Shajra Application v10.0\nPreserve and visualize your family heritage.');
+  } else {
+    renderTree();
+  }
+}
+
+function calculateGenerations() {
+  return familyData.length ? Math.ceil(Math.log2(familyData.length + 1)) : 0;
+}
+
+function toggleSidebarMenu() {
+  openAddMemberModal();
+}
+</script>
+</body>
+</html>
+```
