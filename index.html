@@ -1,76 +1,417 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Family Tree</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="header-shell">
-      <header class="topbar">
-        <div class="header-title">Family Tree</div>
-      </header>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apna Shajra — Family History Platform v10</title><style>
+:root{--green:#174c3b;--gold:#bd9650;--paper:#fffdf7;--bg:#f4efe4;--ink:#282820;--muted:#746f64;--line:#e2d6bd}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,"Segoe UI",sans-serif}header{background:var(--green);color:white;padding:22px 16px;border-bottom:4px solid var(--gold)}.head{max-width:1300px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}h1{margin:0;font-size:clamp(25px,4vw,38px)}header p{margin:5px 0 0;color:#e4eadd}.wrap{max-width:1300px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:340px 1fr;gap:16px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px;min-width:0;box-shadow:0 4px 16px #34260b08}h2{font-size:19px;color:var(--green);margin:0 0 12px}h3{font-size:16px;margin:12px 0 8px}label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;border:1px solid #d9ceb8;border-radius:9px;padding:10px;background:white;color:var(--ink)}textarea{min-height:72px;resize:vertical}button{border:0;border-radius:9px;padding:10px 12px;cursor:pointer;font-weight:700}.primary{background:var(--green);color:white}.secondary{background:#eee4d0;color:#423a2b}.danger{background:#f7e4df;color:#8c3025}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.hint{font-size:12px;color:var(--muted);line-height:1.55}.notice{background:#eaf2e7;color:#28533b;padding:10px;border-radius:9px;font-size:13px;margin:10px 0}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabs button{background:#eae1ce;color:#423a2b}.tabs button.active{background:var(--green);color:white}.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tools button{font-size:13px}.hidden{display:none!important}.tree-scroll{overflow:auto;min-height:240px;padding:10px 4px}.tree{min-width:max-content;display:flex;justify-content:center;gap:14px}.branch{display:flex;flex-direction:column;align-items:center}.children{display:flex;justify-content:center;align-items:flex-start;gap:12px;border-top:2px solid var(--line);margin-top:10px;padding-top:12px}.person{width:175px;border:1px solid var(--gold);border-radius:12px;padding:10px;background:white;text-align:center;box-shadow:0 3px 9px #0000000a;white-space:normal}.person img{width:54px;height:54px;object-fit:cover;border-radius:50%;background:#eee3cd;display:block;margin:0 auto 7px}.person .initial{width:54px;height:54px;border-radius:50%;background:#e9dfc9;color:var(--green);display:grid;place-items:center;margin:0 auto 7px;font-size:22px}.person strong{display:block;overflow-wrap:anywhere}.person small{display:block;color:var(--muted);margin-top:3px}.person button{margin-top:7px;padding:5px 7px;font-size:12px}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.member{border:1px solid var(--line);border-radius:12px;padding:12px;background:white}.member img{width:60px;height:60px;object-fit:cover;border-radius:50%;float:right}.empty{text-align:center;color:var(--muted);padding:35px 10px}.stat{background:#f4eddf;border-radius:10px;padding:10px;flex:1;min-width:90px}.stat b{display:block;font-size:22px;color:var(--green)}.timeline-item{border-left:3px solid var(--gold);padding:0 0 16px 14px;margin-left:8px}.timeline-item b{color:var(--green)}footer{text-align:center;color:var(--muted);font-size:12px;padding:15px}.ltr{direction:ltr}#tree[dir=rtl]{direction:rtl}.tree-scale{transform-origin:top center;transition:transform .15s}.photo-preview{max-width:90px;max-height:90px;border-radius:10px;display:block;margin-top:8px}.member-actions{display:flex;gap:6px;flex-wrap:wrap}.member-actions button{font-size:12px;padding:6px 8px}.share-url{font-size:12px;word-break:break-all;background:#f4eddf;padding:8px;border-radius:8px}.toolbar-label{display:flex;align-items:center;gap:6px}.toolbar-label input{width:auto}.public-banner{background:#fff2cf;color:#614a12;padding:10px;border-radius:9px;margin-bottom:12px}@media(max-width:850px){.wrap{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.person{width:150px}.children{gap:6px}}@media print{header{background:white;color:var(--green);border-bottom:2px solid #aaa}.wrap{display:block}.left,.tools,.tabs,.no-print,footer{display:none!important}.panel{border:0;box-shadow:none}.tree-scroll{overflow:visible}.tree{transform:scale(.85);transform-origin:top center}}
 
-      <nav class="topnav" aria-label="Pages">
-        <a class="nav-link active" href="./index.html">Home</a>
-        <a class="nav-link" href="./about.html">About</a>
-        <a class="nav-link" href="./contact.html">Contact</a>
-      </nav>
-    </div>
+/* Version 5: separate app pages */
+.app-shell{max-width:1400px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:235px minmax(0,1fr);gap:16px;align-items:start}
+.app-nav{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:12px;position:sticky;top:12px;box-shadow:0 4px 16px #34260b08}
+.nav-brand{font-weight:800;color:var(--green);padding:10px 10px 14px;border-bottom:1px solid var(--line);margin-bottom:9px}
+.nav-btn{display:flex;width:100%;text-align:left;align-items:center;gap:9px;margin:4px 0;background:transparent;color:var(--ink);padding:11px 10px;border-radius:10px}
+.nav-btn:hover{background:#eee4d0}.nav-btn.active{background:var(--green);color:white}
+.app-content{min-width:0}.app-page{display:none;min-width:0}.app-page.active{display:block}.page-heading{margin:0 0 13px;color:var(--green);font-size:23px}.page-subtitle{margin:-6px 0 16px;color:var(--muted);font-size:13px}
+.page-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:17px;min-width:0;box-shadow:0 4px 16px #34260b08;margin-bottom:14px}
+.page-actions{display:flex;gap:8px;flex-wrap:wrap}.page-actions>*{flex:0 0 auto}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:14px}
+.quick-card{border:1px solid var(--line);border-radius:14px;background:var(--paper);padding:16px;text-align:left;color:var(--ink);min-height:112px}
+.quick-card strong{display:block;color:var(--green);font-size:16px;margin-bottom:7px}.quick-card span{font-size:13px;color:var(--muted);font-weight:400}
+.page-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.page-toolbar input{flex:1;min-width:190px}
+.app-content .panel{margin-bottom:14px}.app-content .tabbody{display:block!important}.app-content .hidden{display:none!important}
+@media(max-width:850px){.app-shell{grid-template-columns:1fr}.app-nav{position:static;display:flex;overflow-x:auto;gap:5px;padding:8px}.nav-brand{display:none}.nav-btn{white-space:nowrap;width:auto;flex:0 0 auto;margin:0;padding:10px}.app-content{width:100%}}
+@media print{.app-shell{display:block}.app-nav,.page-actions,.page-toolbar,.no-print,footer,header .row{display:none!important}.app-page{display:none!important}#page-tree{display:block!important}}
 
-    <main class="container">
-      <section class="hint">
-        <div>
-          Data change karne ke liye `app.js` me `PEOPLE` aur `ROOT_ID` edit kar dein.
-        </div>
-      </section>
+/* Admin panel */
+#adminBtn{background:#bd9650;color:#201b11;white-space:nowrap}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.admin-card{border:1px solid var(--line);background:var(--paper);border-radius:13px;padding:15px;min-width:0}
+.admin-card h3{margin:0 0 8px;color:var(--green)}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.admin-actions button{flex:1 1 130px}
+.admin-status{font-size:12px;color:var(--muted);line-height:1.5}
+@media(max-width:600px){header{padding:14px 10px}.head{gap:10px}.head>.row{flex-wrap:wrap}.head>.row button{padding:8px 9px}}
 
-      <section class="tree-wrap">
-        <div id="treeRoot" class="tree" aria-label="Family tree"></div>
-      </section>
-    </main>
+#treeScroll{cursor:grab;touch-action:pan-x pan-y;user-select:none}#treeScroll.dragging{cursor:grabbing}#tree{transform-origin:top left!important;min-height:120px}.document-link{display:inline-block;margin:4px 6px 4px 0;font-size:12px}.relationship-result{white-space:pre-line}.secure-admin{border:1px solid var(--gold)}
 
-    <nav class="bottombar" aria-label="Menu">
-      <button id="searchToggleBtn" class="btn btn-ghost" type="button">Search</button>
-      <div id="searchWrap" class="search-wrap hidden" role="group" aria-label="Search input">
-        <input id="searchInput" type="search" placeholder="Name..." autocomplete="off" />
-        <button id="searchClearBtn" class="btn btn-ghost btn-xs" type="button">Clear</button>
-      </div>
+/* V8 polished identity and navigation */
+:root{--green:#174c3b;--gold:#bd9650;--paper:#fffdf8;--bg:#f5f3ed;--ink:#222923;--muted:#6e776f;--line:#e0e5dc;--accent:#e8f0e9}
+body{background:radial-gradient(circle at 8% 0%,#eaf2e8 0,transparent 28%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{position:relative;background:linear-gradient(115deg,#103b2f 0%,#1c5943 58%,#24684d 100%);border-bottom:4px solid var(--gold);padding:18px 20px;box-shadow:0 8px 26px #103b2f20}
+header:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;background-image:radial-gradient(#fff 0.6px,transparent .6px);background-size:13px 13px}
+.head{position:relative;z-index:1;max-width:1440px;align-items:center;flex-direction:row!important}
+.brand-lockup{display:flex;align-items:center;gap:13px;min-width:0}
+.brand-mark{width:52px;height:52px;flex:0 0 52px;border-radius:17px;background:linear-gradient(145deg,#f6e7c6,#d6b26e);display:grid;place-items:center;box-shadow:inset 0 1px 0 #fff8,0 5px 14px #0002;color:#163e30}
+.brand-mark svg{width:33px;height:33px}
+.brand-copy{min-width:0}.brand-copy h1{font-size:clamp(22px,3vw,32px);letter-spacing:-.6px;line-height:1.15}.brand-copy p{margin:6px 0 0;font-size:13px;color:#dbe9df;letter-spacing:.15px}
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.header-actions button{border:1px solid #ffffff2a;border-radius:12px;padding:10px 13px;box-shadow:0 2px 8px #00000012;transition:transform .15s,filter .15s}
+.header-actions button:hover{transform:translateY(-1px);filter:brightness(1.04)}
+#adminBtn{background:linear-gradient(135deg,#f4dfad,#c99e4e);color:#253326;border:1px solid #f7e9c8;font-weight:800}
+#langBtn,#themeBtn{background:#ffffff13;color:white;border-color:#ffffff35}
+.app-shell{max-width:1440px;grid-template-columns:248px minmax(0,1fr);gap:20px;margin-top:22px}
+.app-nav{border-color:#dce4da;border-radius:18px;padding:13px;background:#fffffff0;box-shadow:0 10px 28px #183e2a0a}
+.nav-brand{display:flex;align-items:center;gap:10px;padding:10px 8px 16px;margin-bottom:10px;color:var(--green);font-size:17px;letter-spacing:-.2px}
+.nav-brand:before{content:"🌿";width:38px;height:38px;display:grid;place-items:center;background:#e7f0e6;border-radius:12px;font-size:20px}
+.nav-brand small{display:block;color:var(--muted);font-weight:500;font-size:11px;letter-spacing:.2px;margin-top:3px}
+.nav-btn{border-radius:11px;padding:11px 12px;color:#37453c;font-size:13px;font-weight:650;transition:background .15s,transform .15s}
+.nav-btn:hover{background:#edf3ed;transform:translateX(2px)}.nav-btn.active{background:linear-gradient(100deg,#174c3b,#22674c);box-shadow:0 4px 10px #174c3b24;color:white}
+.page-card,.page-card.panel,.panel,.admin-card{border-color:#e0e6dc;box-shadow:0 8px 26px #173d2908}
+.page-heading{font-size:clamp(23px,2.5vw,29px);letter-spacing:-.55px;color:#174c3b}
+.page-subtitle{font-size:13px;line-height:1.65;color:#6e776f}
+.quick-card{border-color:#e0e6dc;border-radius:16px;box-shadow:0 4px 15px #173d2908;transition:transform .16s,box-shadow .16s,border-color .16s}
+.quick-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px #173d2914;border-color:#b9cdbb}
+.stat{background:linear-gradient(145deg,#edf4eb,#f8f7ef);border:1px solid #e0e8dc}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.feature-card{background:var(--paper);border:1px solid #dfe6dc;border-radius:15px;padding:15px;min-width:0;display:flex;flex-direction:column;gap:9px;box-shadow:0 5px 16px #173d2906}
+.feature-card h3{margin:0;color:#194d39;font-size:15px}.feature-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.55;flex:1}.feature-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}.feature-number{display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:9px;background:#e9f1e7;color:#174c3b;font-size:12px;font-weight:800}.feature-state{font-size:10px;border-radius:20px;padding:5px 8px;background:#eef2ed;color:#46574b;font-weight:750}.feature-state.ready{background:#e1f2e3;color:#21613a}.feature-state.setup{background:#fff0cf;color:#785513}.feature-state.next{background:#f0e9f8;color:#684b82}
+.feature-search{margin-bottom:12px;display:flex;gap:8px}.feature-search input{max-width:440px}
+.header-kicker{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#e9d6aa;font-weight:800;margin-bottom:4px}
+@media(max-width:850px){header{padding:13px 12px}.head{align-items:flex-start;flex-direction:column!important}.brand-mark{width:43px;height:43px;flex-basis:43px;border-radius:14px}.header-actions{width:100%;justify-content:flex-start}.header-actions button{padding:8px 10px}.app-shell{grid-template-columns:1fr;gap:12px;margin-top:12px}.app-nav{display:flex;overflow-x:auto;gap:5px;align-items:center}.nav-brand{display:none}.nav-btn:hover{transform:none}}
+@media(max-width:480px){.brand-copy h1{font-size:22px}.brand-copy p{font-size:11px}.feature-grid{grid-template-columns:1fr}}
 
-      <div class="spacer"></div>
 
-      <div class="group" role="group" aria-label="Zoom">
-        <button id="zoomOutBtn" class="btn btn-ghost btn-xs" type="button">-</button>
-        <label class="zoom-inline">
-          <span>Zoom</span>
-          <input id="zoomRange" type="range" min="60" max="140" value="100" />
-        </label>
-        <button id="zoomInBtn" class="btn btn-ghost btn-xs" type="button">+</button>
-        <button id="zoomResetBtn" class="btn btn-ghost btn-xs" type="button">Reset</button>
-      </div>
+/* V9: refined compact header and navigation buttons */
+.brand-lockup{gap:10px}
+.brand-mark{width:46px;height:46px;flex-basis:46px;border-radius:14px}
+.brand-mark svg{width:29px;height:29px}
+.brand-copy h1{font-size:clamp(20px,2.35vw,28px);letter-spacing:-.7px}
+.brand-copy p{font-size:12px;margin-top:4px}
+.header-kicker{font-size:9px;letter-spacing:1.25px}
+.header-actions{gap:7px}
+.header-actions button{border-radius:11px;padding:9px 11px;font-size:13px}
+#adminBtn{box-shadow:0 4px 12px #081f1638;display:inline-flex;align-items:center;gap:6px}
+.app-nav{padding:11px;overflow:hidden}
+.nav-brand{font-size:15px;letter-spacing:-.35px}
+.nav-brand:before{border-radius:13px;box-shadow:inset 0 1px 0 #fff}
+.nav-btn{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 10px;margin:5px 0;border:1px solid transparent;border-radius:13px;background:transparent;text-align:left;font-size:13px;font-weight:650;color:#3c4b40;transition:background .16s,border-color .16s,transform .16s,box-shadow .16s}
+.nav-icon{display:inline-grid;place-items:center;width:29px;height:29px;flex:0 0 29px;border-radius:9px;background:#edf3eb;color:#285c42;font-size:18px;font-weight:800;line-height:1;transition:background .16s,color .16s}
+.nav-btn:hover{background:#f0f5ee;border-color:#dce8da;transform:translateX(2px)}
+.nav-btn.active{background:linear-gradient(110deg,#174c3b,#23664a);border-color:#2d7155;color:white;box-shadow:0 5px 13px #174c3b20}
+.nav-btn.active .nav-icon{background:#ffffff20;color:#fff}
+.nav-btn:focus-visible,.header-actions button:focus-visible{outline:3px solid #d9b66f;outline-offset:2px}
+@media(max-width:850px){
+ header{padding:11px 12px}
+ .head{align-items:center;flex-direction:row!important;gap:8px}
+ .brand-lockup{gap:8px;flex:1;min-width:0}
+ .brand-mark{width:36px;height:36px;flex-basis:36px;border-radius:11px}
+ .brand-mark svg{width:24px;height:24px}
+ .brand-copy h1{font-size:clamp(16px,4.4vw,21px);letter-spacing:-.45px;line-height:1.08;white-space:normal}
+ .brand-copy p{display:none}
+ .header-kicker{display:none}
+ .header-actions{width:auto;flex:0 0 auto;justify-content:flex-end;gap:5px}
+ .header-actions button{padding:7px 8px;font-size:11px;border-radius:9px;white-space:nowrap}
+ #adminBtn{font-size:0;padding:8px 10px;min-width:36px;justify-content:center}
+ #adminBtn:after{content:'Admin';font-size:11px}
+ .app-nav{border-radius:14px;padding:8px;gap:6px;scrollbar-width:thin;scrollbar-color:#cbd9c9 transparent}
+ .nav-btn{display:flex;flex:0 0 auto;width:auto;min-height:38px;gap:6px;padding:5px 9px;margin:0;border-radius:11px;font-size:12px}
+ .nav-icon{width:25px;height:25px;flex-basis:25px;border-radius:8px;font-size:15px}
+ .nav-btn.active{box-shadow:0 3px 9px #174c3b20}
+}
+@media(max-width:480px){
+ header{padding:10px 9px}
+ .head{gap:6px}
+ .brand-mark{width:32px;height:32px;flex-basis:32px;border-radius:10px}
+ .brand-mark svg{width:21px;height:21px}
+ .brand-copy h1{font-size:17px;max-width:170px}
+ .header-actions{gap:4px}
+ .header-actions button{padding:6px 7px;font-size:10px}
+ #adminBtn{min-width:32px;padding:7px 8px}
+ #adminBtn:after{font-size:10px}
+ .nav-btn{font-size:11px;padding:5px 7px;gap:5px}
+ .nav-icon{width:23px;height:23px;flex-basis:23px;font-size:14px}
+ .app-shell{margin-top:9px}
+}
+@media(max-width:360px){.brand-copy h1{font-size:15px;max-width:140px}.header-actions button{padding:6px}.header-actions #themeBtn{font-size:0}.header-actions #themeBtn:after{content:'◐';font-size:14px}}
 
-      <button id="themeToggleBtn" class="btn btn-ghost" type="button">Theme</button>
-      <button id="expandAllBtn" class="btn" type="button">Expand</button>
-      <button id="collapseAllBtn" class="btn btn-ghost" type="button">Collapse</button>
-    </nav>
 
-    <div id="detailsModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Person details">
-      <div class="modal-backdrop" data-close="1"></div>
-      <div class="modal-card" role="document">
-        <div class="modal-head">
-          <div id="modalTitle" class="modal-title">Person details</div>
-          <button id="closeModalBtn" class="btn btn-ghost btn-xs" type="button">Close</button>
-        </div>
-        <div id="details" class="details empty">Kisi person card par click karein.</div>
-      </div>
-    </div>
+/* V10: restore the two-line brand title on phones and compact the navigation pills */
+@media(max-width:850px){
+ .brand-copy{display:block;min-width:0}
+ .header-kicker{display:block;font-size:8px;letter-spacing:.9px;line-height:1.15;margin-bottom:3px;color:#ead8ad}
+ .brand-copy h1{font-size:clamp(16px,4.1vw,20px);line-height:1.08;max-width:none;white-space:normal}
+ .brand-copy p{display:block;font-size:10px;line-height:1.25;margin:3px 0 0;color:#dbe9df}
+ .brand-lockup{align-items:center;gap:8px}
+ .brand-mark{width:34px;height:34px;flex-basis:34px;border-radius:10px}
+ .brand-mark svg{width:22px;height:22px}
+ .header-actions{gap:4px}
+ .header-actions button{padding:6px 7px;font-size:10px;border-radius:9px}
+ #adminBtn{min-width:31px;padding:7px 8px}
+ .app-nav{padding:6px;gap:5px;border-radius:13px;box-shadow:0 4px 12px #183e2a0a;background:#fffffff5}
+ .nav-btn{min-height:32px;padding:4px 7px;gap:5px;font-size:10px;border-radius:10px;border:1px solid #e2e9df;background:#f8faf6}
+ .nav-icon{width:21px;height:21px;flex-basis:21px;border-radius:7px;font-size:13px;background:#e9f1e7}
+ .nav-btn.active{background:linear-gradient(120deg,#174c3b,#23664a);border-color:#2d7155;box-shadow:0 2px 7px #174c3b18}
+ .nav-btn:hover{transform:none}
+}
+@media(max-width:480px){
+ header{padding:9px 8px}
+ .head{gap:5px}
+ .brand-lockup{gap:6px}
+ .brand-mark{width:30px;height:30px;flex-basis:30px;border-radius:9px}
+ .brand-mark svg{width:20px;height:20px}
+ .header-kicker{font-size:7px;letter-spacing:.65px}
+ .brand-copy h1{font-size:16px;max-width:none;letter-spacing:-.35px}
+ .brand-copy p{font-size:9px;margin-top:2px}
+ .header-actions{gap:3px}
+ .header-actions button{padding:5px 6px;font-size:9px}
+ #adminBtn{min-width:29px;padding:6px 7px}
+ .nav-btn{font-size:9px;padding:4px 6px;gap:4px}
+ .nav-icon{width:19px;height:19px;flex-basis:19px;font-size:12px}
+}
+@media(max-width:360px){
+ .brand-copy h1{font-size:14px;max-width:none}
+ .brand-copy p{font-size:8px}
+ .header-kicker{font-size:6.5px}
+ .header-actions button{padding:5px}
+ .nav-btn{font-size:9px;padding:4px 5px}
+}
 
-    <footer class="footer">
-      <span>Built with plain HTML/CSS/JS (no internet needed).</span>
-    </footer>
 
-    <script src="./site.js"></script>
-    <script src="./app.js"></script>
-  </body>
-</html>
+/* V11: premium family navigation + reliable touch scrolling */
+.app-shell{grid-template-columns:220px minmax(0,1fr);gap:14px}
+.app-nav{min-width:0;overflow-x:hidden;padding:10px;border:1px solid #dce5d9;border-radius:18px;background:linear-gradient(180deg,#fffef9,#f8f8ef);box-shadow:0 8px 24px #174c3b0d}
+.nav-brand{padding:9px 9px 13px;margin-bottom:10px;border-bottom:1px solid #e3e8dc;font-size:14px}
+.nav-btn{position:relative;display:flex;align-items:center;gap:9px;width:100%;min-width:0;margin:4px 0;padding:8px 9px;border:1px solid transparent;border-radius:12px;background:transparent;color:#3b4b40;text-align:left;font-size:12px;font-weight:650;line-height:1.2;transition:background .16s,border-color .16s,box-shadow .16s}
+.nav-icon{width:28px;height:28px;flex:0 0 28px;display:grid;place-items:center;border:1px solid #e1e9dc;border-radius:9px;background:#edf3e9;color:#285b40;font-size:16px;line-height:1}
+.nav-btn:hover{background:#f0f5ec;border-color:#dce7d8}
+.nav-btn.active{background:#174c3b;color:#fff;border-color:#27674a;box-shadow:0 4px 10px #174c3b20}
+.nav-btn.active:before{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:3px;border-radius:0 4px 4px 0;background:#d2ad69}
+.nav-btn.active .nav-icon{background:#ffffff18;border-color:#ffffff35;color:#fff}
+.nav-btn:focus-visible{outline:3px solid #d9b66f;outline-offset:2px}
+.app-content{min-width:0}
+@media(max-width:850px){
+ .app-shell{grid-template-columns:minmax(0,1fr);gap:10px;width:100%;min-width:0;padding:0 9px;margin:10px auto}
+ .app-nav{display:flex;flex-wrap:nowrap;align-items:center;gap:6px;width:100%;max-width:100%;min-width:0;overflow-x:auto!important;overflow-y:hidden;padding:7px;border-radius:14px;scrollbar-width:thin;scrollbar-color:#9eb39d #edf2e9;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;scroll-snap-type:x proximity}
+ .nav-brand{display:none}
+ .nav-btn{display:inline-flex;flex:0 0 auto;width:auto;min-width:max-content;min-height:36px;margin:0;padding:5px 9px;gap:6px;border:1px solid #e0e8dc;border-radius:11px;background:#fbfcf8;font-size:11px;white-space:nowrap;scroll-snap-align:start}
+ .nav-btn.active{background:linear-gradient(135deg,#174c3b,#28674b);border-color:#28674b;box-shadow:0 3px 8px #174c3b1c}
+ .nav-btn.active:before{display:none}
+ .nav-icon{width:23px;height:23px;flex-basis:23px;border-radius:7px;font-size:13px}
+ .app-content{width:100%;min-width:0}
+}
+@media(max-width:480px){
+ .app-shell{padding:0 7px}
+ .app-nav{gap:5px;padding:6px}
+ .nav-btn{min-height:33px;padding:4px 7px;gap:5px;font-size:10px;border-radius:10px}
+ .nav-icon{width:21px;height:21px;flex-basis:21px;font-size:12px}
+}
+
+</style></head><body><header><div class="head"><div class="brand-lockup"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 39V20" stroke="#174c3b" stroke-width="2.8" stroke-linecap="round"/><path d="M24 25C10 25 8 14 8 9c11 0 17 4 16 16Z" fill="#174c3b"/><path d="M24 20C24 9 32 5 41 6c0 11-6 17-17 18Z" fill="#286b4d"/><path d="M12 39h24" stroke="#174c3b" stroke-width="2.8" stroke-linecap="round"/><circle cx="24" cy="31" r="3" fill="#bd9650"/></svg></div><div class="brand-copy"><div class="header-kicker">Family history • Generations • Memories</div><h1>Apna Shajra | اپنا شجرہ</h1><p id="tagline">Your family's story, generation by generation.</p></div></div><div class="header-actions"><button class="secondary" id="langBtn">اردو</button><button class="secondary" id="themeBtn">◐ Theme</button><button class="primary" id="adminBtn" type="button">⚙ Admin Panel</button></div></div></header>
+<main class="wrap"><aside class="panel left"><div class="notice" id="modeNote">Demo mode: data is saved in this browser only.</div><h2 id="accountHeading">Account / اکاؤنٹ</h2><div id="config"><label>Supabase Project URL</label><input id="sburl" placeholder="https://project.supabase.co"><label>Supabase public anon/publishable key</label><input id="sbkey" placeholder="Public key only"><button class="secondary" id="connect">Connect database</button><p class="hint">Never use a service_role or secret key in this public website.</p></div><div id="auth" class="hidden"><label>Email</label><input id="email" type="email" autocomplete="email"><label>Password</label><input id="password" type="password" minlength="8" autocomplete="current-password"><div class="row" style="margin-top:8px"><button class="primary" id="signup">Sign up</button><button class="secondary" id="login">Sign in</button></div><div class="row" style="margin-top:8px"><button class="secondary" id="resetPass">Reset password</button><button class="danger" id="logout">Sign out</button></div><p class="hint" id="userLine">Not signed in.</p><label>Family workspace</label><select id="familySelect"><option value="">My family</option></select><p class="hint">Switch between your own tree and family trees shared with you.</p></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h2 id="formHeading">Add a family member</h2><form id="memberForm"><label id="nameLabel">Full name *</label><input id="name" required maxlength="100"><label id="relationLabel">Relation / role *</label><select id="relation"><option>Ancestor / Buzurg</option><option>Great-grandfather / Pardada</option><option>Great-grandmother / Pardadi</option><option>Grandfather / Dada</option><option>Grandmother / Dadi</option><option>Maternal grandfather / Nana</option><option>Maternal grandmother / Nani</option><option>Father / Walid</option><option>Mother / Walida</option><option>Son / Beta</option><option>Daughter / Beti</option><option>Brother / Bhai</option><option>Sister / Behan</option><option>Husband / Shohar</option><option>Wife / Biwi</option><option>Other / Doosra</option></select><label id="parentLabel">Parent / connect under</label><select id="parent"><option value="">Root / top ancestor</option></select><label>Spouse / partner (optional)</label><select id="partner"><option value="">No partner linked</option></select><div class="row"><div><label>Birth date/year</label><input id="birth" placeholder="e.g. 1942"></div><div><label>Death date/year</label><input id="death" placeholder="e.g. 2010"></div></div><label>Village / city</label><input id="place" maxlength="120"><label>Occupation / taleem</label><input id="occupation" maxlength="120"><label>Life story / notes</label><textarea id="notes" maxlength="2000" placeholder="Family stories, achievements, memories..."></textarea><label>Photo (JPG/PNG/WebP, max 2 MB)</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"><label>Documents (PDF/JPG/PNG, up to 10 MB each)</label><input id="documents" type="file" accept="application/pdf,image/jpeg,image/png" multiple><div id="documentList" class="hint"></div><img id="photoPreview" class="photo-preview hidden" alt="Photo preview"><label>Visibility</label><select id="visibility"><option value="private">Private</option><option value="public">Public profile (safe fields only in public link)</option></select><div class="row" style="margin-top:12px"><button class="primary" style="flex:2" type="submit" id="addBtn">＋ Add member</button><button class="secondary hidden" type="button" id="cancelEdit">Cancel edit</button></div><p class="hint">Online photos use a private Supabase Storage bucket. Local demo photos remain in this browser.</p></form></aside>
+<section class="panel"><div class="row" style="margin-bottom:12px"><div class="stat"><b id="count">0</b><span id="statMembers">Members</span></div><div class="stat"><b id="generations">0</b><span id="statGens">Generations</span></div><div class="stat"><b id="roots">0</b><span id="statRoots">Family branches</span></div></div><div class="tabs"><button class="active" data-tab="treeView">🌳 Shajra</button><button data-tab="directory">👥 Members</button><button data-tab="timeline">🕰 Timeline</button><button data-tab="sharing">🔗 Share & invite</button></div><div class="tools"><input id="search" placeholder="Search by name, city, relation..." style="flex:2;min-width:190px"><button class="secondary" id="export">JSON backup</button><button class="secondary" id="import">Restore backup</button><button class="secondary" id="print">Print / Save PDF</button><button class="secondary" id="csv">Export CSV</button><button class="secondary" id="gedcom">Export GEDCOM</button><button class="secondary" id="zoomIn">Zoom +</button><button class="secondary" id="zoomOut">Zoom −</button><button class="secondary" id="zoomReset">Reset zoom</button><button class="danger" id="clear">Clear tree</button><input id="backupFile" type="file" accept="application/json,.json" hidden></div><div class="notice" id="status">Local demo — your data stays in this browser.</div><div id="treeView" class="tabbody"><div class="tree-scroll" id="treeScroll"><div id="tree" class="tree"><div class="empty">Add your oldest known ancestor to begin.</div></div></div></div><div id="directory" class="tabbody hidden"><section class="page-card" id="relationshipFinder"><h3>Automatic relationship finder</h3><p class="hint">Choose two family members to see the shortest known relationship path.</p><div class="row"><div><label>Person A</label><select id="relA"></select></div><div><label>Person B</label><select id="relB"></select></div></div><button class="primary" id="findRelation" style="margin-top:8px">Find relationship</button><p id="relationResult" class="notice hidden"></p></section><div id="members" class="cards"></div></div><div id="timeline" class="tabbody hidden"><div id="events"></div></div><div id="sharing" class="tabbody hidden"><h2>Share & invite family</h2><div id="shareControls"><h3>Public read-only link</h3><p class="hint">Only profiles marked Public are included. Sensitive notes, birth/death details and occupation are not shown in public view.</p><button class="primary" id="createShare">Create / refresh public link</button> <button class="secondary" id="disableShare">Disable public link</button><div id="shareLink" class="share-url hidden"></div><h3>Invite a family member</h3><label>Relative email address</label><input id="inviteEmail" type="email" placeholder="relative@example.com"><label>Access level</label><select id="inviteRole"><option value="viewer">Can view</option><option value="editor">Can view and edit</option></select><button class="primary" id="createInvite" style="margin-top:8px">Create invitation</button><div id="inviteResult" class="share-url hidden"></div><p class="hint">The recipient must open this site, connect the same Supabase project, sign in with the invited email, then open the invitation link to accept.</p></div><div id="publicReadOnly" class="public-banner hidden">You are viewing a public, read-only family tree. Editing is disabled.</div><button class="secondary" id="shareExport">Export family file</button></div></section></main><footer>Apna Shajra V10 • Protect living people's privacy. Do not publish private details without permission.</footer>
+<script>
+
+// Reorganize the existing app into separate, navigable pages while keeping all feature IDs.
+(function buildSeparatePages(){
+ const main=document.querySelector('main.wrap'); if(!main) return;
+ const oldAside=main.querySelector('aside.left'), oldSection=main.querySelector('section.panel');
+ const shell=document.createElement('div'); shell.className='app-shell';
+ const nav=document.createElement('aside'); nav.className='app-nav'; nav.innerHTML=`<div class="nav-brand">🌿 Apna Shajra<br><small>Family workspace</small></div>
+ <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+ <button class="nav-btn" data-page="tree"><span class="nav-icon">♧</span><span>Family tree</span></button>
+ <button class="nav-btn" data-page="members"><span class="nav-icon">♙</span><span>Members</span></button>
+ <button class="nav-btn" data-page="member"><span class="nav-icon">＋</span><span>Add / edit member</span></button>
+ <button class="nav-btn" data-page="timeline"><span class="nav-icon">◷</span><span>Timeline</span></button>
+ <button class="nav-btn" data-page="sharing"><span class="nav-icon">↗</span><span>Share & invite</span></button>
+ <button class="nav-btn" data-page="backup"><span class="nav-icon">⇩</span><span>Backup & export</span></button>
+ <button class="nav-btn" data-page="account"><span class="nav-icon">⚙</span><span>Account & settings</span></button>
+ <button class="nav-btn" data-page="features"><span class="nav-icon">✧</span><span>All 38 features</span></button>`;
+ const content=document.createElement('div'); content.className='app-content';
+ const pages={};
+ const makePage=(id,title,subtitle='')=>{const el=document.createElement('section');el.className='app-page';el.id='page-'+id;el.innerHTML=`<h2 class="page-heading">${title}</h2>${subtitle?`<p class="page-subtitle">${subtitle}</p>`:''}`;pages[id]=el;content.appendChild(el);return el};
+ const dashboard=makePage('dashboard','Dashboard','Your family history, organized in one place.');
+ const treePage=makePage('tree','Family tree','Explore generations. Use the zoom controls to adjust the view.');
+ const membersPage=makePage('members','Family members','Search and manage the people in your family tree.');
+ const memberPage=makePage('member','Add a family member','Add a new person or edit an existing profile.');
+ const timelinePage=makePage('timeline','Family timeline','Important dates and events from your family history.');
+ const sharingPage=makePage('sharing','Share & invite','Create a public read-only link or invite family collaborators.');
+ const backupPage=makePage('backup','Backup & export','Download a backup or export and print your family data.');
+ const accountPage=makePage('account','Account & settings','Connect your database, manage sign-in, language and appearance.');
+ const featuresPage=makePage('features','All family-history features','A single directory of the 38 capabilities requested. Labels show what works in the current build and what still needs backend integration.');
+ const adminPage=makePage('admin','Admin panel','Secure server-verified Super Admin tools and website preferences.');
+ adminPage.innerHTML += `
+ <div class="notice"><b>Secure Super Admin: global controls appear only when the signed-in user is authorized by the Supabase super_admins table. Local appearance settings are not admin permissions.</div>
+ <div class="admin-grid">
+  <section class="admin-card"><h3>🌐 Website identity</h3><label for="adminSiteTitle">Website title</label><input id="adminSiteTitle" maxlength="80" value="Apna Shajra | اپنا شجرہ"><label for="adminTagline">Subtitle</label><input id="adminTagline" maxlength="160" value="Your family's story, generation by generation."><label for="adminDefaultLang">Language</label><select id="adminDefaultLang"><option value="en">English</option><option value="ur">Urdu</option></select><div class="admin-actions"><button class="primary" id="adminSaveIdentity">Save identity</button></div></section>
+  <section class="admin-card"><h3>🎨 Appearance</h3><label for="adminTheme">Theme</label><select id="adminTheme"><option value="light">Light</option><option value="dark">Dark</option></select><label for="adminDensity">Layout</label><select id="adminDensity"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select><div class="admin-actions"><button class="primary" id="adminApplyAppearance">Apply appearance</button></div><p class="admin-status">Settings are saved in this browser. They do not automatically change other visitors' settings.</p></section>
+  <section class="admin-card"><h3>🗄 Database & account</h3><p id="adminDbStatus" class="admin-status">Checking connection…</p><div class="admin-actions"><button class="secondary" id="adminGoAccount">Database / account settings</button><button class="secondary" id="adminReconnect">Reload saved connection</button></div><p class="admin-status">Use only a Supabase public anon/publishable key. Never put a service-role key in this page.</p></section>
+  <section class="admin-card"><h3>👨‍👩‍👧 Family data</h3><p id="adminDataStats" class="admin-status">Member count and workspace status.</p><div class="admin-actions"><button class="secondary" id="adminBackup">Download JSON backup</button><button class="secondary" id="adminCsv">Export CSV</button><button class="secondary" id="adminPdf">Print / Save PDF</button></div><p class="admin-status">Before restoring or deleting data, download a backup.</p></section>
+  <section class="admin-card"><h3>🔐 Privacy & sharing</h3><p class="admin-status">Review the share and invitation controls. Public links should contain only profiles explicitly marked public. Never add private notes or sensitive details to public profiles.</p><div class="admin-actions"><button class="secondary" id="adminGoSharing">Open sharing controls</button><button class="secondary" id="adminPrivacyInfo">Privacy checklist</button></div></section>
+  <section class="admin-card"><h3>🧰 Maintenance</h3><p class="admin-status">Refresh displayed counts, or clear the currently loaded tree after confirmation. Clear action cannot be undone without a backup.</p><div class="admin-actions"><button class="secondary" id="adminRefresh">Refresh status</button><button class="danger" id="adminClear">Clear current family tree</button></div></section>
+ </div>
+ <section class="admin-card" style="margin-top:14px"><h3>🛡 Secure Super Admin</h3><p class="admin-status">This panel is enabled only when Supabase verifies your account against the server-side super_admins table. Being able to open this page does not grant admin rights.</p><p id="superAdminStatus" class="notice">Checking server authorization…</p><div id="secureAdminPanel" class="hidden"><div class="admin-grid"><div class="admin-card"><b>Registered users</b><p id="adminUsersCount">—</p></div><div class="admin-card"><b>Families</b><p id="adminFamiliesCount">—</p></div><div class="admin-card"><b>Member records</b><p id="adminMembersCount">—</p></div></div><button class="secondary" id="refreshSecureAdmin" style="margin-top:10px">Refresh server stats</button><p class="hint">Global statistics only; user deletion or password changes are intentionally not exposed from this public static frontend.</p></div></section>
+ <p id="adminFeedback" class="notice hidden" role="status"></p>`;
+ const move=(id,target)=>{const el=document.getElementById(id);if(el)target.appendChild(el);return el};
+ if(oldAside){
+  const accountCard=document.createElement('div');accountCard.className='page-card';
+  ['modeNote','accountHeading','config','auth'].forEach(id=>move(id,accountCard));accountPage.appendChild(accountCard);
+  const formCard=document.createElement('div');formCard.className='page-card';['formHeading','memberForm'].forEach(id=>move(id,formCard));memberPage.appendChild(formCard);
+  oldAside.remove();
+ }
+ if(oldSection){
+  const stats=oldSection.querySelector('.row'); if(stats){stats.classList.add('dashboard-grid');dashboard.appendChild(stats)}
+  const tabs=oldSection.querySelector('.tabs');if(tabs)tabs.remove();
+  const tools=oldSection.querySelector('.tools');
+  const status=move('status',dashboard); if(status)dashboard.appendChild(status);
+  // Keep search on the members page; place tree zoom controls on the tree page and exports on backup.
+  if(tools){
+   const search=document.getElementById('search'); if(search){const bar=document.createElement('div');bar.className='page-toolbar';bar.appendChild(search);membersPage.appendChild(bar)}
+   const zoombar=document.createElement('div');zoombar.className='page-toolbar';
+   ['zoomIn','zoomOut','zoomReset'].forEach(id=>{const e=document.getElementById(id);if(e)zoombar.appendChild(e)});treePage.appendChild(zoombar);
+   const backupbar=document.createElement('div');backupbar.className='page-toolbar';
+   ['export','import','print','csv','gedcom','clear','backupFile'].forEach(id=>{const e=document.getElementById(id);if(e){if(id==='backupFile')e.style.display='none';backupbar.appendChild(e)}});backupPage.appendChild(backupbar);
+   tools.remove();
+  }
+  const tv=move('treeView',treePage);if(tv)tv.classList.remove('hidden');
+  const dir=move('directory',membersPage);if(dir)dir.classList.remove('hidden');
+  const dupPanel=document.createElement('section');dupPanel.className='page-card';dupPanel.innerHTML='<h3>Possible duplicate profiles</h3><p class="hint">Checks names and places in the currently loaded family. Review matches before merging; no records are changed automatically.</p><button type="button" class="secondary" id="checkDuplicates">Find possible duplicates</button><div id="duplicateResults" class="hint" style="margin-top:10px"></div>';membersPage.appendChild(dupPanel);
+  const tl=move('timeline',timelinePage);if(tl)tl.classList.remove('hidden');
+  const sh=move('sharing',sharingPage);if(sh)sh.classList.remove('hidden');
+  oldSection.remove();
+ }
+ // Dashboard shortcuts are real page navigation actions.
+ const quick=document.createElement('div');quick.className='dashboard-grid';quick.innerHTML=`
+ <button class="quick-card" data-goto="tree"><strong>🌳 Open family tree</strong><span>View your generations and connections.</span></button>
+ <button class="quick-card" data-goto="member"><strong>＋ Add family member</strong><span>Create a profile with dates and a photo.</span></button>
+ <button class="quick-card" data-goto="timeline"><strong>🕰 Family timeline</strong><span>Browse important dates and events.</span></button>
+ <button class="quick-card" data-goto="sharing"><strong>🔗 Share with family</strong><span>Manage sharing and invitations.</span></button>
+ <button class="quick-card" data-goto="backup"><strong>💾 Backup your data</strong><span>Export JSON, CSV or print to PDF.</span></button>
+ <button class="quick-card" data-goto="account"><strong>⚙️ Account settings</strong><span>Connect Supabase or manage your account.</span></button>`;
+ dashboard.appendChild(quick);
+
+ const featureItems=[
+ ['Interactive family tree','Zoom, pan and generation connections.','ready','tree'],
+ ['Complete member profiles','Names, dates, places, occupation, notes and profile photos.','ready','members'],
+ ['Family timeline','Show dated events available from member records.','ready','timeline'],
+ ['Super Admin dashboard','Server-verified admin status and aggregate statistics.','setup','admin'],
+ ['User management','Account suspension, password changes and full user controls need a trusted backend.','next','admin'],
+ ['Public family approval','Approval queue for public family pages needs additional backend workflow.','next','sharing'],
+ ['Activity logs','Auditable who-changed-what history needs database triggers and UI.','next','admin'],
+ ['Server-side roles & permissions','Owner/editor/viewer rules and RLS are included in the SQL setup.','setup','account'],
+ ['Website identity settings','Change local website title and subtitle.','ready','admin'],
+ ['Family invitations','Create invitation links and accept after sign-in. Email sending depends on provider setup.','setup','sharing'],
+ ['Shared family editing','Switch between owned and invited family workspaces.','setup','account'],
+ ['Public family pages','Server-side share function returns a restricted set of public fields.','setup','sharing'],
+ ['Change approval workflow','Proposed edits and owner approval queue need additional backend integration.','next','admin'],
+ ['Family comments','Per-profile comments and moderation need a dedicated comments table and UI.','next','members'],
+ ['Duplicate detection','Find likely duplicate names and places using the current family records.','ready','members'],
+ ['Relationship finder','Find shortest known path through parent/partner links.','ready','members'],
+ ['Advanced search','Search existing member name, relationship and location fields.','ready','members'],
+ ['Family statistics','Count members, roots and generations.','ready','dashboard'],
+ ['Urdu and English','Language toggle and Urdu direction support.','ready','account'],
+ ['Family map','Map view needs geocoding/map provider and location consent.','next','features'],
+ ['Surname history','Record surname origin and spelling history needs a dedicated profile field/page.','next','features'],
+ ['High-quality PDF','Use browser print/save as PDF; exact layout depends on browser and printer settings.','ready','backup'],
+ ['Image export','PNG export of a large chart needs rendering support and is not guaranteed in this build.','next','tree'],
+ ['GEDCOM import/export','GEDCOM export available; robust import/validation still needs testing.','setup','backup'],
+ ['Automatic backups','Manual JSON backup is available; scheduled backups require external automation or database plan support.','setup','backup'],
+ ['Family book generator','Printable family-book report needs a dedicated report builder.','next','backup'],
+ ['Private documents vault','Private storage buckets and access policies are included in SQL; configure and test first.','setup','member'],
+ ['Mobile-first layout','Responsive navigation and forms.','ready','dashboard'],
+ ['Installable PWA','Offline install support requires manifest, service worker and HTTPS setup.','next','features'],
+ ['Dark/light themes','Toggle appearance for this browser.','ready','account'],
+ ['Notifications','In-app and email notifications need provider/backend integration.','next','sharing'],
+ ['Multiple family trees','Workspace switching is supported for shared family collaborations.','setup','account'],
+ ['Help center','Feature directory and setup notes are available; full help articles can be expanded.','setup','features'],
+ ['Source citations','Attach sources to records needs source table and profile UI.','next','members'],
+ ['Memorial profiles','Memorial display mode needs a dedicated setting and consent controls.','next','members'],
+ ['Branch-only printing','Print a selected ancestor branch needs branch filtering before print.','next','tree'],
+ ['Event reminders','Calendar reminders need a notification scheduler.','next','timeline'],
+ ['Data validation & recovery','Basic validation plus manual JSON backup/restore; restore should be tested on a copy.','setup','backup']
+ ];
+ const searchWrap=document.createElement('div');searchWrap.className='feature-search';searchWrap.innerHTML='<input id="featureSearch" type="search" placeholder="Search all features…"><span class="hint" style="align-self:center">38 features</span>';featuresPage.appendChild(searchWrap);
+ const featureGrid=document.createElement('div');featureGrid.className='feature-grid';featureGrid.id='featureGrid';
+ const stateLabel={ready:'Available',setup:'Setup required',next:'Further work'};
+ featureGrid.innerHTML=featureItems.map((f,i)=>`<article class="feature-card" data-feature-search="${(f[0]+' '+f[1]).toLowerCase().replace(/"/g,'&quot;')}"><div class="feature-meta"><span class="feature-number">${String(i+1).padStart(2,'0')}</span><span class="feature-state ${f[2]}">${stateLabel[f[2]]}</span></div><h3>${f[0]}</h3><p>${f[1]}</p><button class="secondary" type="button" data-feature-goto="${f[3]}">Open section</button></article>`).join('');featuresPage.appendChild(featureGrid);
+ const featureSearch=document.getElementById('featureSearch');featureSearch?.addEventListener('input',()=>{const q=featureSearch.value.toLowerCase();featureGrid.querySelectorAll('.feature-card').forEach(card=>card.style.display=card.dataset.featureSearch.includes(q)?'flex':'none')});
+ featureGrid.querySelectorAll('[data-feature-goto]').forEach(b=>b.addEventListener('click',()=>{const target=b.dataset.featureGoto;if(target==='admin'){window.showAppPage?.('admin');refreshAdminPanel();refreshSuperAdminUI()}else if(target==='features')window.showAppPage?.('features');else window.showAppPage?.(target)}));
+
+ shell.append(nav,content);main.replaceChildren(shell);main.classList.remove('wrap');
+ window.showAppPage=function(id){if(!pages[id])id='dashboard';Object.values(pages).forEach(p=>p.classList.toggle('active',p.id==='page-'+id));nav.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});};
+ nav.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>window.showAppPage(b.dataset.page)));
+ dashboard.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>window.showAppPage(b.dataset.goto)));
+ window.showAppPage('dashboard');
+})();
+
+const $=id=>document.getElementById(id);
+const STORAGE='apnaShajra_v7', CFG='apnaShajraSupabase_v7';
+let people=[], user=null, sb=null, mode='local', lang='en', dark=false, photoData='', editId=null, zoom=1, familyOwnerId=null, familyRole='owner', readOnly=false, publicToken=null, familyDocuments=[], isSuperAdmin=false;
+// Admin button and panel controls. This is a per-site settings panel, not a global user-admin console.
+const ADMIN_PREFS='apnaShajraAdminPrefs_v1';
+function adminFeedback(msg){const el=document.getElementById('adminFeedback');if(el){el.textContent=msg;el.classList.remove('hidden')}}
+function refreshAdminPanel(){const prefs=JSON.parse(localStorage.getItem(ADMIN_PREFS)||'{}');const title=prefs.title||'Apna Shajra | اپنا شجرہ';const tagline=prefs.tagline||"Your family's story, generation by generation.";const ti=document.getElementById('adminSiteTitle'),ta=document.getElementById('adminTagline');if(ti)ti.value=title;if(ta)ta.value=tagline;const hh=document.querySelector('header h1'),ht=document.getElementById('tagline');if(hh)hh.textContent=title;if(ht)ht.textContent=tagline;const dl=document.getElementById('adminDefaultLang');if(dl)dl.value=prefs.lang||lang;const th=document.getElementById('adminTheme');if(th)th.value=dark?'dark':'light';const den=document.getElementById('adminDensity');if(den)den.value=prefs.density||'comfortable';const db=document.getElementById('adminDbStatus');if(db)db.textContent=mode==='online'?'Connected to Supabase · '+(user?.email||'Signed out'):'Local demo mode · data is stored in this browser only';const stats=document.getElementById('adminDataStats');if(stats)stats.textContent=`Current workspace: ${familyRole==='owner'?'Owner':familyRole} · ${people.length} members · ${people.filter(p=>!p.parent||!people.some(x=>x.id===p.parent)).length} root branches · ${people.filter(p=>p.photo||p.photoPath).length} profiles with photos.`;}
+const adminButton=document.getElementById('adminBtn');if(adminButton)adminButton.addEventListener('click',()=>{if(window.showAppPage)window.showAppPage('admin');refreshAdminPanel();refreshSuperAdminUI()});
+document.getElementById('adminSaveIdentity')?.addEventListener('click',()=>{const prefs=JSON.parse(localStorage.getItem(ADMIN_PREFS)||'{}');prefs.title=document.getElementById('adminSiteTitle').value.trim()||'Apna Shajra | اپنا شجرہ';prefs.tagline=document.getElementById('adminTagline').value.trim();prefs.lang=document.getElementById('adminDefaultLang').value;localStorage.setItem(ADMIN_PREFS,JSON.stringify(prefs));document.querySelector('header h1').textContent=prefs.title;document.getElementById('tagline').textContent=prefs.tagline;if(prefs.lang!==lang)document.getElementById('langBtn')?.click();adminFeedback('Website identity saved in this browser.')});
+document.getElementById('adminApplyAppearance')?.addEventListener('click',()=>{const prefs=JSON.parse(localStorage.getItem(ADMIN_PREFS)||'{}');prefs.density=document.getElementById('adminDensity').value;localStorage.setItem(ADMIN_PREFS,JSON.stringify(prefs));const wantDark=document.getElementById('adminTheme').value==='dark';if(wantDark!==dark)document.getElementById('themeBtn')?.click();document.body.style.fontSize=prefs.density==='compact'?'14px':'15px';adminFeedback('Appearance updated. This setting applies in this browser.')});
+document.getElementById('adminGoAccount')?.addEventListener('click',()=>window.showAppPage?.('account'));
+document.getElementById('adminGoSharing')?.addEventListener('click',()=>window.showAppPage?.('sharing'));
+document.getElementById('adminBackup')?.addEventListener('click',()=>document.getElementById('export')?.click());
+document.getElementById('adminCsv')?.addEventListener('click',()=>document.getElementById('csv')?.click());
+document.getElementById('adminPdf')?.addEventListener('click',()=>document.getElementById('print')?.click());
+document.getElementById('adminRefresh')?.addEventListener('click',()=>{try{refreshAdminPanel();adminFeedback('Admin status refreshed.')}catch(e){adminFeedback('Could not refresh: '+e.message)}});
+document.getElementById('adminReconnect')?.addEventListener('click',async()=>{try{const cfg=JSON.parse(localStorage.getItem(CFG)||'null');if(!cfg)throw Error('No saved Supabase connection. Open Account & Settings first.');await connectSupabase(cfg.url,cfg.key);refreshAdminPanel();adminFeedback('Saved database connection loaded.')}catch(e){adminFeedback('Connection issue: '+e.message)}});
+document.getElementById('adminPrivacyInfo')?.addEventListener('click',()=>alert('Privacy checklist\n1. Use a public anon/publishable key only.\n2. Keep RLS enabled on every database table.\n3. Share only profiles explicitly marked public.\n4. Do not publish sensitive details about living people without permission.\n5. Test public links and invitations with a separate account before launch.'));
+document.getElementById('adminClear')?.addEventListener('click',()=>{if(readOnly){adminFeedback('Read-only workspace cannot be cleared.');return}document.getElementById('clear')?.click();setTimeout(refreshAdminPanel,500);adminFeedback('Clear request submitted. Check the main status message for completion.')});
+
+const tr=(en,ur)=>lang==='ur'?ur:en;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function persist(){localStorage.setItem(STORAGE,JSON.stringify(people))}
+function download(content,name,type){const a=document.createElement('a'),u=URL.createObjectURL(new Blob([content],{type}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function photo(p){return p.photo?`<img src="${esc(p.photo)}" alt="">`:`<div class="initial">${esc((p.name||'?').slice(0,1))}</div>`}
+function matches(p,q){return !q||[p.name,p.relation,p.place,p.occupation,p.notes,p.birth,p.death].join(' ').toLowerCase().includes(q.toLowerCase())}
+function updateParent(){const sel=$('parent'),v=sel.value;sel.innerHTML='<option value="">Root / top ancestor</option>'+people.filter(p=>p.id!==editId).map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');if(v)sel.value=v;const ps=$('partner');if(ps){const pv=ps.value;ps.innerHTML='<option value="">No partner linked</option>'+people.filter(p=>p.id!==editId).map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');if(pv)ps.value=pv;}updateRelationshipSelectors()}
+function card(p){return `<div class="person">${photo(p)}<strong>${esc(p.name)}</strong><small>${esc(p.relation)}</small>${p.birth?`<small>Born: ${esc(p.birth)}</small>`:''}${p.death?`<small>Died: ${esc(p.death)}</small>`:''}${p.place?`<small>📍 ${esc(p.place)}</small>`:''}${p.occupation?`<small>${esc(p.occupation)}</small>`:''}<div class="member-actions">${readOnly?'':`<button class="secondary" data-edit="${esc(p.id)}">Edit</button><button class="danger" data-remove="${esc(p.id)}">Delete</button>`}</div></div>`}
+function branch(p,seen=new Set()){if(seen.has(p.id))return '';const next=new Set(seen);next.add(p.id);let kids=people.filter(x=>x.parent===p.id);return `<div class="branch">${card(p)}${kids.length?`<div class="children">${kids.map(k=>branch(k,next)).join('')}</div>`:''}</div>`}
+function render(){readOnly=!!publicToken||familyRole==='viewer';updateParent();const q=$('search').value.trim(),shown=people.filter(p=>matches(p,q));const roots=shown.filter(p=>!p.parent||!people.some(x=>x.id===p.parent));$('tree').innerHTML=roots.length?roots.map(p=>branch(p)).join(''):`<div class="empty">${people.length?'No matching members.':'Add your oldest known ancestor to begin.'}</div>`;$('tree').style.transform=`scale(${zoom})`;$('members').innerHTML=shown.map(p=>`<article class="member">${p.photo?`<img src="${esc(p.photo)}" alt="">`:''}<b>${esc(p.name)}</b><div class="hint">${esc(p.relation)}${p.place?' · '+esc(p.place):''}</div><p>${esc(p.notes||'')}</p><div class="member-actions">${readOnly?'':`<button class="secondary" data-edit="${esc(p.id)}">Edit</button><button class="danger" data-remove="${esc(p.id)}">Delete</button>`}</div></article>`).join('')||'<p class="empty">No members found.</p>';
+const dated=shown.filter(p=>p.birth||p.death).sort((a,b)=>String(a.birth||a.death).localeCompare(String(b.birth||b.death)));$('events').innerHTML=dated.map(p=>`<div class="timeline-item"><b>${esc(p.birth||p.death)}</b><div>${esc(p.name)} — ${esc(p.relation)}</div>${p.place?`<small>${esc(p.place)}</small>`:''}${p.death?`<div class="hint">Death: ${esc(p.death)}</div>`:''}</div>`).join('')||'<p class="empty">Add birth/death years to build the timeline.</p>';
+$('count').textContent=people.length;$('roots').textContent=people.filter(p=>!p.parent||!people.some(x=>x.id===p.parent)).length;function depth(p,seen=new Set()){if(seen.has(p.id))return 1;const s=new Set(seen);s.add(p.id);return p.parent&&people.some(x=>x.id===p.parent)?1+depth(people.find(x=>x.id===p.parent),s):1}const depths=people.map(p=>depth(p));$('generations').textContent=Math.max(0,...depths);$('status').textContent=readOnly?'Public read-only view':mode==='online'?`Online account: ${user?.email||''} · ${people.length} members`:`Local demo · ${people.length} members`;document.documentElement.lang=lang;$('tree').dir=lang==='ur'?'rtl':'ltr';$('memberForm').querySelectorAll('input,select,textarea,button').forEach(el=>{if(el.id!=='cancelEdit')el.disabled=readOnly});$('shareControls').classList.toggle('hidden',readOnly || familyRole!=='owner');$('publicReadOnly').classList.toggle('hidden',!readOnly);updateRelationshipSelectors();if(typeof refreshAdminPanel==='function')refreshAdminPanel();renderDocumentList();}
+
+function updateRelationshipSelectors(){for(const id of ['relA','relB']){const el=$(id);if(!el)continue;const old=el.value;el.innerHTML='<option value="">Choose a person</option>'+people.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');if(old)el.value=old;}}
+function relationshipPath(aId,bId){const byId=new Map(people.map(p=>[p.id,p]));if(!byId.has(aId)||!byId.has(bId))return null;if(aId===bId)return [byId.get(aId).name];const adj=new Map(people.map(p=>[p.id,[]]));const link=(a,b,labelAB,labelBA)=>{if(a&&b&&adj.has(a)&&adj.has(b)){adj.get(a).push([b,labelAB]);adj.get(b).push([a,labelBA])}};for(const p of people){link(p.id,p.parent,'is child of','is parent of');link(p.id,p.partner,'is partner of','is partner of');}const q=[[aId,[]]],seen=new Set([aId]);while(q.length){const [id,path]=q.shift();for(const [n,label] of (adj.get(id)||[])){if(seen.has(n))continue;const next=[...path,{from:byId.get(id).name,relation:label,to:byId.get(n).name}];if(n===bId)return next;seen.add(n);q.push([n,next]);}}return null;}
+$('findRelation')?.addEventListener('click',()=>{const out=$('relationResult');const path=relationshipPath($('relA').value,$('relB').value);out.classList.remove('hidden');if(!path){out.textContent='No connected relationship found. Check parent and partner links.';return}out.textContent=typeof path[0]==='string'?path[0]:path.map(x=>`${x.from} ${x.relation} ${x.to}`).join('\n');});
+// Drag/pan support for the tree viewport; zoom remains controlled by the toolbar.
+(()=>{const el=$('treeScroll');if(!el)return;let down=false,sx=0,sy=0,sl=0,st=0;el.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;down=true;sx=e.clientX;sy=e.clientY;sl=el.scrollLeft;st=el.scrollTop;el.classList.add('dragging');el.setPointerCapture?.(e.pointerId)});el.addEventListener('pointermove',e=>{if(!down)return;el.scrollLeft=sl-(e.clientX-sx);el.scrollTop=st-(e.clientY-sy)});const stop=()=>{down=false;el.classList.remove('dragging')};el.addEventListener('pointerup',stop);el.addEventListener('pointercancel',stop);})();
+function gedcomEscape(v){return String(v||'').replace(/[\\/]/g,' ').replace(/\n/g,' ').trim()}
+function exportGedcom(){const ids=new Map(people.map((p,i)=>[p.id,`@I${i+1}@`]));const families=[];const familyByPair=new Map();for(const p of people){if(p.parent){const parent=people.find(x=>x.id===p.parent);if(parent){const key=[parent.id,p.id].sort().join('|');if(!familyByPair.has(key)){const f={id:`@F${families.length+1}@`,parents:[parent],children:[p]};families.push(f);familyByPair.set(key,f)}}}if(p.partner){const pair=[p.id,p.partner].sort().join('|');if(!familyByPair.has(pair)){const partner=people.find(x=>x.id===p.partner);if(partner){const f={id:`@F${families.length+1}@`,parents:[p,partner],children:[]};families.push(f);familyByPair.set(pair,f)}}}}const lines=['0 HEAD','1 SOUR APNA_SHajra','1 GEDC','2 VERS 5.5.1','1 CHAR UTF-8'];for(const p of people){lines.push(`0 ${ids.get(p.id)} INDI`,`1 NAME ${gedcomEscape(p.name)}`);if(p.birth)lines.push('1 BIRT',`2 DATE ${gedcomEscape(p.birth)}`);if(p.death)lines.push('1 DEAT',`2 DATE ${gedcomEscape(p.death)}`);if(p.place)lines.push('1 RESI',`2 PLAC ${gedcomEscape(p.place)}`);if(p.notes)lines.push(`1 NOTE ${gedcomEscape(p.notes)}`);const famc=families.find(f=>f.children.some(c=>c.id===p.id));if(famc)lines.push(`1 FAMC ${famc.id}`);for(const f of families.filter(f=>f.parents.some(x=>x.id===p.id)))lines.push(`1 FAMS ${f.id}`)}for(const f of families){lines.push(`0 ${f.id} FAM`);if(f.parents[0])lines.push(`1 HUSB ${ids.get(f.parents[0].id)}`);if(f.parents[1])lines.push(`1 WIFE ${ids.get(f.parents[1].id)}`);for(const c of f.children)lines.push(`1 CHIL ${ids.get(c.id)}`)}lines.push('0 TRLR');download(lines.join('\r\n'),'apna-shajra.ged','text/plain;charset=utf-8')}
+$('gedcom')?.addEventListener('click',exportGedcom);
+async function uploadDocuments(files,memberId){if(mode!=='online'||!sb||!user)throw Error('Document cloud storage requires a signed-in Supabase account.');for(const file of files){if(file.size>10*1024*1024)throw Error(`${file.name} is larger than 10 MB.`);if(!['application/pdf','image/jpeg','image/png'].includes(file.type))throw Error('Only PDF, JPG and PNG documents are supported.');const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`${familyOwnerId}/${memberId}/${crypto.randomUUID()}-${safe}`;const {error:upErr}=await sb.storage.from('family-documents').upload(path,file,{upsert:false,contentType:file.type});if(upErr)throw upErr;const {error:dbErr}=await sb.from('family_documents').insert({owner_id:familyOwnerId,member_id:memberId,storage_path:path,file_name:file.name,mime_type:file.type,size_bytes:file.size});if(dbErr){await sb.storage.from('family-documents').remove([path]);throw dbErr}}await loadDocuments();}
+async function loadDocuments(){familyDocuments=[];if(mode==='online'&&sb&&user&&familyOwnerId){const {data,error}=await sb.from('family_documents').select('id,owner_id,member_id,storage_path,file_name,mime_type,size_bytes,created_at').eq('owner_id',familyOwnerId).order('created_at',{ascending:false});if(error)throw error;familyDocuments=data||[]}renderDocumentList()}
+function renderDocumentList(){const el=$('documentList');if(!el)return;const docs=familyDocuments.filter(d=>d.member_id===editId);if(!docs.length){el.textContent='No uploaded documents for this profile yet.';return}el.innerHTML=docs.map(d=>`<div><a href="#" data-doc="${esc(d.id)}">${esc(d.file_name)}</a> <button type="button" class="danger" data-doc-delete="${esc(d.id)}">Delete</button></div>`).join('')}
+$('documentList')?.addEventListener('click',async e=>{const a=e.target.closest('[data-doc]');const del=e.target.closest('[data-doc-delete]');if(a){e.preventDefault();const d=familyDocuments.find(x=>x.id===a.dataset.doc);if(!d)return;try{const {data,error}=await sb.storage.from('family-documents').createSignedUrl(d.storage_path,120);if(error)throw error;window.open(data.signedUrl,'_blank','noopener')}catch(err){alert('Could not open document: '+err.message)}}if(del){const d=familyDocuments.find(x=>x.id===del.dataset.docDelete);if(!d||!confirm('Delete this document?'))return;try{const {error:se}=await sb.storage.from('family-documents').remove([d.storage_path]);if(se)throw se;const {error:de}=await sb.from('family_documents').delete().eq('id',d.id);if(de)throw de;await loadDocuments()}catch(err){alert('Delete failed: '+err.message)}}});
+async function refreshSuperAdminUI(){const status=$('superAdminStatus'),panel=$('secureAdminPanel');if(!status||!panel)return;if(!sb||!user){isSuperAdmin=false;panel.classList.add('hidden');status.textContent='Connect Supabase and sign in. Admin access is verified by the database, not by this button.';return}try{const {data,error}=await sb.rpc('is_super_admin');if(error)throw error;isSuperAdmin=!!data;if(isSuperAdmin){status.textContent='Verified Super Admin — authorization confirmed by Supabase.';panel.classList.remove('hidden');await refreshSecureAdminStats()}else{status.textContent='Signed in, but this account is not a Super Admin. No global admin controls are available.';panel.classList.add('hidden')}}catch(e){isSuperAdmin=false;panel.classList.add('hidden');status.textContent='Super Admin verification unavailable. Run the V7 SQL and authorize an account first.'}}
+async function refreshSecureAdminStats(){if(!isSuperAdmin||!sb)return;const {data,error}=await sb.rpc('super_admin_overview');if(error)throw error;$('adminUsersCount').textContent=data?.users_count??'—';$('adminFamiliesCount').textContent=data?.families_count??'—';$('adminMembersCount').textContent=data?.members_count??'—'}
+$('refreshSecureAdmin')?.addEventListener('click',async()=>{try{await refreshSecureAdminStats();adminFeedback('Secure admin statistics refreshed from Supabase.')}catch(e){adminFeedback('Admin stats error: '+e.message)}});
+function localLoad(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'[]');people=Array.isArray(x)?x:[]}catch{people=[]}}
+function rowToPerson(x){return {id:x.id,name:x.name,relation:x.relation,parent:x.parent_id||'',partner:x.partner_id||'',birth:x.birth||'',death:x.death||'',place:x.place||'',occupation:x.occupation||'',notes:x.notes||'',photo:x.photo_url||'',photoPath:x.photo_url||'',visibility:x.visibility||'private'}}
+async function loadOnline(){if(!sb||!user||!familyOwnerId)return;const {data,error}=await sb.from('family_members_v3').select('*').eq('user_id',familyOwnerId).order('created_at');if(error)throw error;people=(data||[]).map(rowToPerson);render()}
+async function uploadPhoto(file,id){if(!file)return '';if(mode!=='online')return await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)});if(!user)throw Error('Sign in first.');if(file.size>2*1024*1024)throw Error('Photo must be under 2 MB.');if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Use JPG, PNG or WebP.');const path=`${familyOwnerId}/${id}-${Date.now()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;const {error}=await sb.storage.from('family-photos').upload(path,file,{upsert:true,contentType:file.type});if(error)throw error;return path}
+async function photoUrl(path){if(!path)return '';if(path.startsWith('data:')||/^https?:/.test(path))return path;if(mode==='online'&&sb){const {data,error}=await sb.storage.from('family-photos').createSignedUrl(path,3600);return error?'':data.signedUrl}return ''}
+async function hydratePhotos(){if(mode!=='online')return;for(const p of people){if(p.photo&&!p.photo.startsWith('data:')&&!/^https?:/.test(p.photo))p.photo=await photoUrl(p.photo)}render()}
+function resetForm(){editId=null;photoData='';$('memberForm').reset();$('partner').value='';$('documents').value='';$('documentList').innerHTML='';$('formHeading').textContent='Add a family member';$('addBtn').textContent='＋ Add member';$('cancelEdit').classList.add('hidden');$('photoPreview').classList.add('hidden');updateParent()}
+function editPerson(id){if(readOnly)return;const p=people.find(x=>x.id===id);if(!p)return;editId=id;$('name').value=p.name;$('relation').value=p.relation;$('parent').value=p.parent||'';$('partner').value=p.partner||'';$('birth').value=p.birth||'';$('death').value=p.death||'';$('place').value=p.place||'';$('occupation').value=p.occupation||'';$('notes').value=p.notes||'';$('visibility').value=p.visibility||'private';photoData='';if(p.photo){$('photoPreview').src=p.photo;$('photoPreview').classList.remove('hidden')}else $('photoPreview').classList.add('hidden');updateParent();$('partner').value=p.partner||'';renderDocumentList();$('formHeading').textContent='Edit family member';$('addBtn').textContent='Save changes';$('cancelEdit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+async function savePerson(p){if(mode==='local'){if(editId){people=people.map(x=>x.id===editId?p:x)}else people.push(p);persist();render();return}if(!user)throw Error('Sign in first.');const payload={id:p.id,user_id:familyOwnerId,name:p.name,relation:p.relation,parent_id:p.parent||null,partner_id:p.partner||null,birth:p.birth||null,death:p.death||null,place:p.place||null,occupation:p.occupation||null,notes:p.notes||null,photo_url:(p.photoPath||p.photo)||null,visibility:p.visibility||'private'};const result=editId?await sb.from('family_members_v3').update(payload).eq('id',editId).eq('user_id',familyOwnerId):await sb.from('family_members_v3').insert(payload);if(result.error)throw result.error;await loadOnline();await hydratePhotos()}
+async function loadFamilies(){if(!sb||!user)return;const opts=[{owner_id:user.id,role:'owner',label:'My family'}];const {data,error}=await sb.from('family_collaborators').select('owner_id,role').eq('member_id',user.id);if(error)throw error;for(const x of (data||[])){if(x.owner_id!==user.id)opts.push({owner_id:x.owner_id,role:x.role,label:`Shared family (${x.role})`})}const sel=$('familySelect');sel.innerHTML=opts.map(x=>`<option value="${esc(x.owner_id)}" data-role="${esc(x.role)}">${esc(x.label)}</option>`).join('');if(!opts.some(x=>x.owner_id===familyOwnerId))familyOwnerId=user.id;sel.value=familyOwnerId;familyRole=(opts.find(x=>x.owner_id===familyOwnerId)||opts[0]).role;}
+$('familySelect').onchange=async()=>{if(!user)return;familyOwnerId=$('familySelect').value||user.id;familyRole=$('familySelect').selectedOptions[0]?.dataset.role||'owner';readOnly=familyRole==='viewer';resetForm();try{await loadOnline();await hydratePhotos();await loadDocuments();render()}catch(e){alert('Could not open family workspace: '+e.message)}};
+async function connectSupabase(url,key){if(!window.supabase)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';s.onload=resolve;s.onerror=reject;document.head.appendChild(s)});sb=window.supabase.createClient(url,key);localStorage.setItem(CFG,JSON.stringify({url,key}));mode='online';$('config').classList.add('hidden');$('auth').classList.remove('hidden');const {data}=await sb.auth.getSession();user=data.session?.user||null;familyOwnerId=user?.id||null;if(user){familyOwnerId=user.id;await loadFamilies();await loadOnline();await hydratePhotos();await loadDocuments()}$('userLine').textContent=user?.email||'Not signed in.';render();refreshSuperAdminUI()}
+function safePublicRows(rows){return rows.map(p=>({id:p.id,name:p.name,relation:p.relation,parent_id:p.parent_id,place:p.place,photo_url:null,visibility:'public'}))}
+async function openPublicShare(token){const params=new URL(location.href).searchParams;const saved=JSON.parse(localStorage.getItem(CFG)||'null');const linked=(params.get('sburl')&&params.get('sbkey'))?{url:params.get('sburl'),key:params.get('sbkey')}:null;const cfg=linked||saved;if(!cfg)throw Error('This share link is missing its public Supabase configuration. Ask the owner to recreate it.');await connectSupabase(cfg.url,cfg.key);const {data,error}=await sb.rpc('get_public_family_share',{share_token:token});if(error)throw error;const rows=Array.isArray(data)?data:data?.members;if(!rows||!rows.length)throw Error('This share link is invalid, disabled, or has no public profiles.');people=rows.map(rowToPerson);readOnly=true;mode='online';$('config').classList.add('hidden');$('auth').classList.add('hidden');$('memberForm').classList.add('hidden');$('shareControls').classList.add('hidden');$('publicReadOnly').classList.remove('hidden');$('status').textContent='Public read-only family tree';render()}
+$('langBtn').onclick=()=>{lang=lang==='en'?'ur':'en';$('langBtn').textContent=lang==='en'?'اردو':'English';$('formHeading').textContent=lang==='en'?'Add a family member':'خاندان کا فرد شامل کریں';$('treeView').dir=lang==='ur'?'rtl':'ltr';render()};
+$('themeBtn').onclick=()=>{dark=!dark;document.documentElement.style.setProperty('--bg',dark?'#202820':'#f4efe4');document.documentElement.style.setProperty('--paper',dark?'#2a342b':'#fffdf7');document.documentElement.style.setProperty('--ink',dark?'#f3f0e7':'#282820');document.documentElement.style.setProperty('--line',dark?'#52604f':'#e2d6bd');$('themeBtn').textContent=dark?'Light mode':'Dark mode'};
+// Navigation is handled by the separate-page sidebar.
+$('search').oninput=render;$('zoomIn').onclick=()=>{zoom=Math.min(1.5,zoom+.1);render()};$('zoomOut').onclick=()=>{zoom=Math.max(.5,zoom-.1);render()};$('zoomReset').onclick=()=>{zoom=1;render()};$('cancelEdit').onclick=resetForm;
+$('photo').onchange=async e=>{const f=e.target.files[0];if(!f){photoData='';return}if(f.size>2*1024*1024){alert('Choose a photo under 2 MB.');e.target.value='';return}if(!['image/jpeg','image/png','image/webp'].includes(f.type)){alert('Use JPG, PNG or WebP.');e.target.value='';return}try{if(mode==='local')photoData=await uploadPhoto(f,editId||crypto.randomUUID());else photoData=f;$('photoPreview').src=mode==='local'?photoData:URL.createObjectURL(f);$('photoPreview').classList.remove('hidden')}catch(err){alert(err.message)}};
+$('memberForm').onsubmit=async e=>{e.preventDefault();if(readOnly)return;try{const id=editId||crypto.randomUUID();let photo=photoData;if(mode==='online'&&photoData instanceof File)photo=await uploadPhoto(photoData,id);const old=people.find(p=>p.id===editId);const p={id,name:$('name').value.trim(),relation:$('relation').value,parent:$('parent').value,partner:$('partner').value,birth:$('birth').value.trim(),death:$('death').value.trim(),place:$('place').value.trim(),occupation:$('occupation').value.trim(),notes:$('notes').value.trim(),photo:photo||old?.photoPath||old?.photo||'',photoPath:photo||old?.photoPath||old?.photo||'',visibility:$('visibility').value};await savePerson(p);const docFiles=[...($('documents').files||[])];if(docFiles.length){if(mode==='online')await uploadDocuments(docFiles,id);else alert('Member saved. Connect Supabase and sign in to upload cloud documents.')}resetForm();if(window.showAppPage)window.showAppPage('members')}catch(err){alert('Save error: '+err.message)}};
+$('tree').onclick=$('members').onclick=async e=>{const eb=e.target.closest('[data-edit]');if(eb){editPerson(eb.dataset.edit);return}const b=e.target.closest('[data-remove]');if(!b||readOnly)return;const id=b.dataset.remove;if(!confirm('Delete this member and all descendants?'))return;const gone=new Set([id]);let changed=true;while(changed){changed=false;people.forEach(p=>{if(gone.has(p.parent)&&!gone.has(p.id)){gone.add(p.id);changed=true}})}try{if(mode==='online'){const {error}=await sb.from('family_members_v3').delete().eq('user_id',familyOwnerId).in('id',[...gone]);if(error)throw error;await loadOnline()}else{people=people.filter(p=>!gone.has(p.id));persist();render()}}catch(err){alert(err.message)}};
+$('export').onclick=()=>download(JSON.stringify({app:'ApnaShajra',version:7,people},null,2),'apna-shajra-backup.json','application/json');$('shareExport').onclick=()=>download(JSON.stringify({app:'ApnaShajra',version:7,people},null,2),'apna-shajra-family-export.json','application/json');$('import').onclick=()=>$('backupFile').click();$('backupFile').onchange=async e=>{try{const raw=JSON.parse(await e.target.files[0].text()),arr=Array.isArray(raw)?raw:raw.people;if(!Array.isArray(arr)||arr.some(p=>!p.id||!p.name))throw Error('Invalid backup file');if(!confirm('Replace your current tree with this backup?'))return;if(mode==='online'){if(!user)throw Error('Sign in first');const del=await sb.from('family_members_v3').delete().eq('user_id',familyOwnerId);if(del.error)throw del.error;for(const p of arr){const payload={...p,id:crypto.randomUUID(),photo:typeof p.photo==='string'&&p.photo.startsWith('data:')?'':p.photo};await savePerson(payload)}}else{people=arr;persist();render()}}catch(err){alert('Restore failed: '+err.message)}e.target.value=''};$('print').onclick=()=>window.print();$('csv').onclick=()=>{const cols=['name','relation','birth','death','place','occupation','notes'],csv=[cols.join(','),...people.map(p=>cols.map(k=>'"'+String(p[k]||'').replace(/"/g,'""')+'"').join(','))].join('\r\n');download(csv,'apna-shajra-members.csv','text/csv')};
+$('clear').onclick=async()=>{if(!confirm('Delete all members? Export a backup first.'))return;try{if(mode==='online'){const {error}=await sb.from('family_members_v3').delete().eq('user_id',familyOwnerId);if(error)throw error;await loadOnline()}else{people=[];persist();render()}}catch(err){alert(err.message)}};
+$('createShare').onclick=async()=>{try{if(mode!=='online'||!user)throw Error('Connect Supabase and sign in first.');const {data,error}=await sb.from('family_shares').upsert({owner_id:familyOwnerId,active:true},{onConflict:'owner_id'}).select('token').single();if(error)throw error;const url=new URL(location.href);const cfg=JSON.parse(localStorage.getItem(CFG)||'null');url.searchParams.set('share',data.token);if(cfg){url.searchParams.set('sburl',cfg.url);url.searchParams.set('sbkey',cfg.key)}$('shareLink').textContent=url.href;$('shareLink').classList.remove('hidden');await navigator.clipboard?.writeText(url.href).catch(()=>{});alert('Public link created. Only profiles marked Public are shown; private records stay hidden.')}catch(e){alert('Could not create share link: '+e.message)}};
+$('disableShare').onclick=async()=>{try{if(mode!=='online'||!user)throw Error('Sign in first.');const {error}=await sb.from('family_shares').update({active:false}).eq('owner_id',familyOwnerId);if(error)throw error;$('shareLink').classList.add('hidden');alert('Public link disabled.')}catch(e){alert(e.message)}};
+$('createInvite').onclick=async()=>{try{if(mode!=='online'||!user)throw Error('Connect Supabase and sign in first.');const email=$('inviteEmail').value.trim().toLowerCase();if(!email.includes('@'))throw Error('Enter a valid email address.');const {data,error}=await sb.from('family_invites').insert({owner_id:familyOwnerId,invited_email:email,role:$('inviteRole').value}).select('token').single();if(error)throw error;const url=new URL(location.href);const cfg=JSON.parse(localStorage.getItem(CFG)||'null');url.searchParams.set('invite',data.token);if(cfg){url.searchParams.set('sburl',cfg.url);url.searchParams.set('sbkey',cfg.key)}const msg=`You are invited to join this family tree on Apna Shajra. Sign in using ${email}, then open: ${url.href}`;$('inviteResult').textContent=msg;$('inviteResult').classList.remove('hidden');await navigator.clipboard?.writeText(msg).catch(()=>{});alert('Invitation created. Send the copied message to the invited email owner.')}catch(e){alert('Invitation failed: '+e.message)}};
+$('copyInvite').onclick=async()=>{const txt=$('inviteText').value||'You are invited to help build our family tree on Apna Shajra.';try{await navigator.clipboard.writeText(txt);alert('Invitation copied.')}catch{$('inviteText').focus();$('inviteText').select()}};
+$('connect').onclick=async()=>{try{const url=$('sburl').value.trim(),key=$('sbkey').value.trim();if(!url||!key)throw Error('Enter Supabase URL and public anon/publishable key.');await connectSupabase(url,key)}catch(err){alert('Connection failed: '+err.message)}};
+$('signup').onclick=async()=>{try{const {data,error}=await sb.auth.signUp({email:$('email').value.trim(),password:$('password').value});if(error)throw error;user=data.user;if(data.session){familyOwnerId=user.id;await loadFamilies();await loadOnline();await loadDocuments()}else alert('Check your email to confirm, then sign in.');render()}catch(e){alert(e.message)}};
+$('login').onclick=async()=>{try{const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;user=data.user;familyOwnerId=user.id;await loadFamilies();await loadOnline();await hydratePhotos();await loadDocuments();$('userLine').textContent=user.email;render();await refreshSuperAdminUI();const invite=new URL(location.href).searchParams.get('invite');if(invite){const {error:ie}=await sb.rpc('accept_family_invite',{invite_token:invite});if(ie)throw ie;await loadFamilies();alert('Invitation accepted. Choose the shared family from the Family workspace list.')}}catch(e){alert(e.message)}};
+$('resetPass').onclick=async()=>{try{const {error}=await sb.auth.resetPasswordForEmail($('email').value.trim());if(error)throw error;alert('If the email is registered, password reset instructions will be sent.')}catch(e){alert(e.message)}};
+$('logout').onclick=async()=>{if(sb)await sb.auth.signOut();user=null;familyOwnerId=null;people=[];mode='local';isSuperAdmin=false;localLoad();$('auth').classList.add('hidden');$('config').classList.remove('hidden');render();refreshSuperAdminUI()};
+(async()=>{localLoad();render();const params=new URL(location.href).searchParams;const saved=JSON.parse(localStorage.getItem(CFG)||'null');const linked=(params.get('sburl')&&params.get('sbkey'))?{url:params.get('sburl'),key:params.get('sbkey')}:null;const cfg=linked||saved;try{if(cfg)await connectSupabase(cfg.url,cfg.key);const share=params.get('share');if(share){publicToken=share;await openPublicShare(share)}else if(params.get('invite')){if(user){const {error}=await sb.rpc('accept_family_invite',{invite_token:params.get('invite')});if(error)throw error;await loadFamilies();$('status').textContent='Invitation accepted. Select the shared family workspace.'}else $('status').textContent='Invitation link detected. Sign in using the invited email to accept.'}}catch(e){console.warn(e);$('status').textContent='Setup needed: '+e.message}})();
+
+// V8 local duplicate checker. It only reports candidates; it never merges or deletes records.
+document.addEventListener('click',e=>{if(e.target?.id!=='checkDuplicates')return;const out=document.getElementById('duplicateResults');if(!out)return;const norm=v=>String(v||'').normalize('NFKD').toLowerCase().replace(/[^a-z0-9؀-ۿ]+/g,' ').trim();const hits=[];for(let i=0;i<people.length;i++){for(let j=i+1;j<people.length;j++){const a=people[i],b=people[j];const sameName=norm(a.name)&&norm(a.name)===norm(b.name);const samePlace=norm(a.place)&&norm(a.place)===norm(b.place);if(sameName&&(samePlace||!a.place||!b.place))hits.push(`${esc(a.name)} — ${esc(a.place||'place not set')} ↔ ${esc(b.name)} — ${esc(b.place||'place not set')}`)}}out.innerHTML=hits.length?hits.map(x=>`<div class="notice">${x}</div>`).join(''):'No likely duplicates found in the currently loaded records.';});
+
+</script></body></html>
