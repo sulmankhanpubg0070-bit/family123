@@ -2,6 +2,7 @@
   "name": "family-tree",
   "version": "1.0.0",
   "description": "Family Tree with Vercel Serverless Functions and MongoDB",
+  "type": "module",
   "main": "api/members.js",
   "scripts": {
     "dev": "vercel dev"
