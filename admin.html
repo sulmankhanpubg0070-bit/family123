@@ -1,17 +1,22 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
 <div id="hdr"></div><main>
-<div class="box" id="login" style="display:none"><h3>🔒 Admin login</h3><input id="un" placeholder="Username (master ke liye khali chorein)" autocapitalize="none"><input id="pw" type="password" placeholder="Password">
+<div class="box" id="login" style="display:none"><h3>🔒 Admin login</h3><div id="err" class="note" style="display:none"></div><input id="un" placeholder="Username (master ke liye khali chorein)" autocapitalize="none"><input id="pw" type="password" placeholder="Password">
 <label class="row"><input type="checkbox" id="rm" checked> Mujhe yaad rakho (is device par)</label><button class="btn" onclick="go()">Login</button></div>
 <div id="dash" style="display:none"><div class="cards" id="cd"></div><div class="box" id="sm"></div></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
 const $=i=>document.getElementById(i);
-async function show(){const a=await adminInit('admin.html');if(!a){login.style.display='block';return}
- login.style.display='none';dash.style.display='block';const d=await load(),dead=d.filter(x=>x.dead).length;
- cd.innerHTML=[['admin-members.html','👥','Members',d.length+' total'],['admin-site.html','🌐','Site settings','Naam, tagline, about'],
+async function show(){
+ try{const a=await adminInit('admin.html');
+ if(!a){$('login').style.display='block';if(window.adminErr){$('err').style.display='block';$('err').textContent=why(window.adminErr)}return}
+ $('login').style.display='none';$('dash').style.display='block';const d=await load(),dead=d.filter(x=>x.dead).length;
+ $('cd').innerHTML=[['admin-members.html','👥','Members',d.length+' total'],['admin-site.html','🌐','Site settings','Naam, tagline, about'],
  ...(a.role=='master'?[['admin-accounts.html','🔑','Passwords','Admin accounts'],['admin-log.html','📜','Activity log','Kis ne kya badla']]:[]),
  ['admin-backup.html','💾','Backup','Backup, trash, import'],['index.html','🌳','Site dekhein','Shajra']].map(c=>`<a class="cd" href="${c[0]}"><span>${c[1]}</span><b>${c[2]}</b><small>${c[3]}</small></a>`).join('');
- sm.innerHTML=`<h3>Khulasa</h3><p>Zinda: <b>${d.length-dead}</b> · Marhoom: <b>${dead}</b></p>`}
-async function go(){const c={user:un.value.trim()||undefined,password:pw.value};const r=await apiJ(API,{...c,op:'ping'});
- if(r.s==200){sc(c,rm.checked);location.reload()}else alert(r.s==429?r.j.error:r.s==401?'Username ya password ghalat':'Server se rabta nahi hua (MongoDB / ADMIN_PASSWORD check karein)')}
+ $('sm').innerHTML=`<h3>Khulasa</h3><p>Zinda: <b>${d.length-dead}</b> · Marhoom: <b>${dead}</b></p>`}
+ catch(e){$('login').style.display='block';$('err').style.display='block';$('err').textContent='Page error: '+e.message}}
+async function go(){const c={user:$('un').value.trim()||undefined,password:$('pw').value};
+ if(!c.password)return alert('Password likhein');
+ const r=await apiJ(API,{...c,op:'ping'});
+ if(r.s==200){sc(c,$('rm').checked);location.reload()}else alert(why(r))}
 show();
 </script></body></html>
