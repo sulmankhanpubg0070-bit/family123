@@ -1,7 +1,5 @@
-// Configuration
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? 'http://localhost:3000/api' 
-  : '/api';
+// Configuration - Vercel ke liye
+const API_BASE = '/api/members';
 const ADMIN_PASSWORD = '1234';
 
 // Sample data (fallback if API fails)
@@ -21,7 +19,7 @@ let dataCache = null;
 // Fetch data from API
 async function fetchData() {
   try {
-    const response = await fetch(`${API_BASE}/members`);
+    const response = await fetch(API_BASE);
     if (!response.ok) throw new Error('API request failed');
     const data = await response.json();
     dataCache = data;
@@ -33,56 +31,47 @@ async function fetchData() {
   }
 }
 
-// Get data (async version)
+// Get data
 async function getDataAsync() {
   return await fetchData();
 }
 
-// Get data (sync version for backward compatibility)
+// Get data (sync fallback)
 function getData() {
-  // For backward compatibility with existing code
-  // In production, you should use getDataAsync()
   if (dataCache) return dataCache;
   return SAMPLE.slice();
 }
 
-// Save data to API
+// Save data (import all)
 async function saveDataAsync(data) {
   try {
-    const response = await fetch(`${API_BASE}/members/import`, {
+    const response = await fetch(API_BASE, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-password': ADMIN_PASSWORD
-      },
-      body: JSON.stringify(data)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data, password: ADMIN_PASSWORD })
     });
     if (!response.ok) throw new Error('Failed to save data');
-    dataCache = data;
+    dataCache = null;
     return true;
   } catch (error) {
-    console.error('Failed to save to API:', error);
+    console.error('Failed to save:', error);
     return false;
   }
 }
 
-// Save single member
-async function saveMemberAsync(member) {
+// Add single member
+async function addMemberAsync(member) {
   try {
-    const response = await fetch(`${API_BASE}/members/${member.id}`, {
-      method: member.id ? 'PUT' : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-password': ADMIN_PASSWORD
-      },
-      body: JSON.stringify(member)
+    const response = await fetch(API_BASE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...member, password: ADMIN_PASSWORD })
     });
-    if (!response.ok) throw new Error('Failed to save member');
-    const saved = await response.json();
-    dataCache = null; // Invalidate cache
-    return saved;
+    if (!response.ok) throw new Error('Failed to add member');
+    dataCache = null;
+    return await response.json();
   } catch (error) {
-    console.error('Failed to save member:', error);
+    console.error('Failed to add member:', error);
     return null;
   }
 }
@@ -90,14 +79,13 @@ async function saveMemberAsync(member) {
 // Delete member
 async function deleteMemberAsync(id) {
   try {
-    const response = await fetch(`${API_BASE}/members/${id}`, {
+    const response = await fetch(API_BASE, {
       method: 'DELETE',
-      headers: {
-        'x-admin-password': ADMIN_PASSWORD
-      }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, password: ADMIN_PASSWORD })
     });
     if (!response.ok) throw new Error('Failed to delete member');
-    dataCache = null; // Invalidate cache
+    dataCache = null;
     return true;
   } catch (error) {
     console.error('Failed to delete member:', error);
@@ -105,33 +93,16 @@ async function deleteMemberAsync(id) {
   }
 }
 
-// Add new member
-async function addMemberAsync(member) {
-  try {
-    const response = await fetch(`${API_BASE}/members`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-password': ADMIN_PASSWORD
-      },
-      body: JSON.stringify(member)
-    });
-    if (!response.ok) throw new Error('Failed to add member');
-    const newMember = await response.json();
-    dataCache = null; // Invalidate cache
-    return newMember;
-  } catch (error) {
-    console.error('Failed to add member:', error);
-    return null;
-  }
-}
-
 // Get stats
 async function getStatsAsync() {
   try {
-    const response = await fetch(`${API_BASE}/stats`);
-    if (!response.ok) throw new Error('Failed to fetch stats');
-    return await response.json();
+    const data = await getDataAsync();
+    return {
+      total: data.length,
+      males: data.filter(x => x.gender === 'M').length,
+      females: data.filter(x => x.gender === 'F').length,
+      roots: data.filter(x => !x.father).length
+    };
   } catch (error) {
     console.error('Failed to fetch stats:', error);
     return { total: 0, males: 0, females: 0, roots: 0 };
@@ -141,7 +112,7 @@ async function getStatsAsync() {
 // Header function (unchanged)
 function header(on) {
   document.getElementById('hdr').innerHTML = `<div class="top"><span class="logo">Family Shajra</span><a class="btn r" href="admin.html">\ud83d\udd12 Admin</a></div>
-<nav><a href="index.html" class="${on == 'home' ? 'on' : ''}">\ud83c\udfe0 Home</a><a href="stats.html" class="${on == 'stats' ? 'on' : ''}">\ud83d\udcca Stats</a><a href="about.html" class="${on == 'about' ? 'on' : ''}">\u2139\ufe0f About</a><a href="#" id="mb">\u2630 Menu</a>
+<nav><a href="index.html" class="${on=='home'?'on':''}">\ud83c\udfe0 Home</a><a href="stats.html" class="${on=='stats'?'on':''}">\ud83d\udcca Stats</a><a href="about.html" class="${on=='about'?'on':''}">\u2139\ufe0f About</a><a href="#" id="mb">\u2630 Menu</a>
 <div id="menuBox"><a href="admin.html">Admin panel</a><a href="about.html">About</a><a href="#" id="exp">Data export</a></div></nav>`;
 
   const b = document.getElementById('menuBox');
