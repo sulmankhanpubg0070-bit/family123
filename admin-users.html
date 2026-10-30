@@ -1,0 +1,14 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Password</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main><div id="adm"></div>
+<div class="box" id="mine" style="display:none"><h3>Mera password badlein</h3><input id="op" type="password" placeholder="Purana password"><input id="npw" type="password" placeholder="Naya password (kam az kam 6 harf)"><button class="btn g" onclick="myp()">Badlein</button></div>
+<div class="box" id="mst" style="display:none"><p>Master password Vercel mein <b>ADMIN_PASSWORD</b> mein hai. Badalna ho to wahan badal kar Redeploy karein.</p></div>
+<div class="box" id="acc" style="display:none"><h3>Admin accounts</h3><table id="ut"></table><input id="nu" placeholder="Naya username (a-z, 0-9, _)" autocapitalize="none"><input id="np" type="password" placeholder="Password (kam az kam 6 harf)"><button class="btn" onclick="addU()">Account banayein / password badlein</button></div></main>
+<script src="common.js"></script><script src="admin.js"></script><script>
+header('');let C;
+guard('admin-users.html').then(g=>{if(!g)return;C=g.C;if(g.master){mst.style.display=acc.style.display='block';users()}else mine.style.display='block'});
+async function myp(){const r=await apiJ('/api/users',{...C,action:'mypass',oldPassword:op.value,newPassword:npw.value});
+ if(r.s==200){lsSet(SK,JSON.stringify({token:r.j.token}));op.value=npw.value='';alert('Password badal gaya')}else alert((r.j&&r.j.error)||'Nahi hua ('+r.s+')')}
+async function users(){const r=await apiJ('/api/users',{...C,action:'list'});ut.innerHTML=(r.j||[]).map(u=>`<tr><td>👤 ${esc(u)}</td><td><button class="btn r" onclick="delU('${esc(u)}')">Del</button></td></tr>`).join('')||'<tr><td>Abhi koi account nahi</td></tr>'}
+async function addU(){const r=await apiJ('/api/users',{...C,action:'save',username:nu.value,userPassword:np.value});if(r.s==200){nu.value=np.value='';users()}else alert((r.j&&r.j.error)||'Nahi hua ('+r.s+')')}
+async function delU(u){if(!confirm(u+' ka account delete karein?'))return;await apiJ('/api/users',{...C,action:'delete',username:u});users()}
+</script></body></html>

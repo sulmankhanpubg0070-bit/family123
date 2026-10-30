@@ -1,41 +1,19 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"></head><body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
 <div id="hdr"></div><main>
-<div class="box" id="login"><h3>Admin login</h3><input id="un" placeholder="Username (master ke liye khali chorein)" autocapitalize="none"><input id="pw" type="password" placeholder="Password"><button class="btn" onclick="go()">Login</button></div>
-<div id="panel" style="display:none">
-<div class="box"><h3 id="ft">Naya member</h3><input id="nm" placeholder="Naam"><select id="fa"></select><select id="mo"></select>
-<select id="ge"><option value="M">Male</option><option value="F">Female</option></select>
-<input id="dob" type="date"><input id="ph" placeholder="Phone"><input id="sp" placeholder="Biwi / Shauhar ka naam">
-<label class="row"><input type="checkbox" id="dd"> Marhoom</label><input type="file" id="pic" accept="image/*">
-<button class="btn g" onclick="add()" id="sv">Add member</button> <button class="btn w" onclick="reset()">Clear</button></div>
-<div class="box"><h3>Members</h3><table id="tb"></table></div>
-<div class="box"><h3>Trash (delete kiye hue)</h3><table id="trt"></table></div>
-<div class="box"><h3>Site settings</h3><input id="sn" placeholder="Site ka naam"><input id="stg" placeholder="Tagline"><textarea id="sab" rows="4" placeholder="About page ka matan" style="width:100%;padding:12px;font-size:16px;border:1px solid #ccc;border-radius:10px;margin-bottom:10px"></textarea><button class="btn g" onclick="saveSet()">Save settings</button></div>
-<div id="mbox" style="display:none"><div class="box"><h3>Admin accounts</h3><table id="ut"></table><input id="nu" placeholder="Naya username (a-z, 0-9, _)" autocapitalize="none"><input id="np" type="password" placeholder="Password (kam az kam 6 harf)"><button class="btn" onclick="addU()">Account banayein / password badlein</button></div>
-<div class="box"><h3>Kis ne kya badla (aakhri 40)</h3><table id="at"></table></div></div>
-<div class="box"><h3>Data import</h3><input type="file" id="fi" accept=".json"></div></div></main>
-<script src="common.js"></script><script>
-header('');const $=i=>document.getElementById(i);let d=[],eid=null,photo='',C={},master=false;
-const reload=async()=>{d=await load();draw()};
-async function go(){const c={user:un.value.trim()||undefined,password:pw.value};const r=await apiJ(API,{...c,op:'ping'});
- if(r.s==200){C=c;master=!c.user;login.style.display='none';panel.style.display='block';mbox.style.display=master?'block':'none';await reload();trash();const t=await loadSettings();sn.value=t.siteName;stg.value=t.tagline;sab.value=t.about;if(master){users();audit()}}
+<div class="box" id="login" style="display:none"><h3>🔒 Admin login</h3><input id="un" placeholder="Username (master ke liye khali chorein)" autocapitalize="none"><input id="pw" type="password" placeholder="Password"><button class="btn" onclick="go()">Login</button></div>
+<div id="adm"></div>
+<div id="dash" class="cards" style="display:none"></div></main>
+<script src="common.js"></script><script src="admin.js"></script><script>
+header('');
+async function go(){const r=await apiJ(API,{user:un.value.trim()||undefined,password:pw.value,op:'ping'});
+ if(r.s==200&&r.j.token){lsSet(SK,JSON.stringify({token:r.j.token}));init()}
  else alert(r.s==429?r.j.error:r.s==401?'Username ya password ghalat':'Server se rabta nahi hua (MongoDB / ADMIN_PASSWORD check karein)')}
-async function saveSet(){const r=await apiJ('/api/settings',{...C,siteName:sn.value,tagline:stg.value,about:sab.value});alert(r.s==200?'Settings save ho gayi':'Save nahi hui ('+r.s+')')}
-async function users(){const r=await apiJ('/api/users',{...C,action:'list'});ut.innerHTML=(r.j||[]).map(u=>`<tr><td>${esc(u)}</td><td><button class="btn r" onclick="delU('${esc(u)}')">Del</button></td></tr>`).join('')||'<tr><td>Abhi koi account nahi</td></tr>'}
-async function addU(){const r=await apiJ('/api/users',{...C,action:'save',username:nu.value,userPassword:np.value});if(r.s==200){nu.value=np.value='';users()}else alert((r.j&&r.j.error)||'Nahi hua ('+r.s+')')}
-async function delU(u){if(!confirm(u+' ka account delete karein?'))return;await apiJ('/api/users',{...C,action:'delete',username:u});users()}
-async function trash(){const r=await apiJ(API,{...C,op:'trash'});trt.innerHTML=(r.j||[]).map(m=>`<tr><td>${esc(m.name)}</td><td><button class="btn g" onclick="rest(${m.id})">Wapas</button></td></tr>`).join('')||'<tr><td>Trash khali hai</td></tr>'}
-async function rest(id){if((await op(C,{op:'restore',id})).s==200){await reload();trash()}}
-async function audit(){const r=await apiJ(API,{...C,op:'audit'});at.innerHTML=(r.j||[]).map(a=>`<tr><td>${new Date(a.t).toLocaleString()}</td><td>${esc(a.who)}: ${esc(a.action)} ${esc(a.detail)}</td></tr>`).join('')}
-function draw(){const o=t=>`<option value="">${t}</option>`+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
- const f=fa.value,m2=mo.value;fa.innerHTML=o('Walid (father) select karein');mo.innerHTML=o('Walida (mother) select karein');fa.value=f;mo.value=m2;
- tb.innerHTML=d.map(m=>`<tr><td>${esc(m.name)}</td><td><button class="btn" onclick="ed(${m.id})">Edit</button> <button class="btn r" onclick="del(${m.id})">Del</button></td></tr>`).join('')}
-function reset(){eid=null;photo='';['nm','dob','ph','sp'].forEach(i=>$(i).value='');dd.checked=false;pic.value='';fa.value='';mo.value='';ft.textContent='Naya member';sv.textContent='Add member'}
-function ed(id){const m=d.find(x=>x.id==id);eid=id;nm.value=m.name;fa.value=m.father||'';mo.value=m.mother||'';ge.value=m.gender||'M';dob.value=m.dob||'';ph.value=m.phone||'';sp.value=m.spouse||'';dd.checked=!!m.dead;photo=m.photo||'';ft.textContent='Edit: '+m.name;sv.textContent='Save changes';scrollTo(0,0)}
-pic.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
-async function add(){if(!nm.value.trim())return alert('Naam likhein');
- const m={id:eid||Date.now(),name:nm.value.trim(),father:fa.value?+fa.value:null,mother:mo.value?+mo.value:null,gender:ge.value,dob:dob.value,phone:ph.value,spouse:sp.value,dead:dd.checked,photo};
- if(m.father==m.id||m.mother==m.id)return alert('Apna walid/walida khud nahi ho sakta');
- if((await op(C,{op:'upsert',member:m})).s==200){reset();await reload();if(master)audit()}}
-async function del(id){if(!confirm('Delete karein? (Trash se wapas aa sakta hai)'))return;if((await op(C,{op:'remove',id})).s==200){await reload();trash();if(master)audit()}}
-fi.onchange=e=>{const r=new FileReader();r.onload=async()=>{try{const n=JSON.parse(r.result);if(!confirm('Mojooda sara data is file se badal jayega (purana backup ban jata hai). Jari rakhein?'))return;if((await op(C,{op:'import',members:n})).s==200){await reload();alert('Import ho gaya')}}catch(x){alert('File sahi nahi')}};r.readAsText(e.target.files[0])};
+async function init(){
+ if(!sess()){login.style.display='block';dash.style.display='none';return}
+ const g=await guard('admin.html',true);if(!g){login.style.display='block';return}
+ login.style.display='none';const n=(await load()).length;
+ const cd=(h,c,i,t,s)=>`<a class="acard ${c}" href="${h}"><i>${i}</i><b>${t}</b><small>${s}</small></a>`;
+ dash.innerHTML=cd('admin-members.html','c1','👪','Members',n+' log')+cd('admin-site.html','c2','🌐','Site ka naam','naam, tagline, about')+cd('admin-users.html','c3','🔑','Password',g.master?'admin accounts':'apna password')+(g.master?cd('admin-backup.html','c4','💾','Backup','download / wapas lagayein')+cd('admin-log.html','c5','📜','Log','kis ne kya badla'):'');
+ dash.style.display='grid'}
+init();
 </script></body></html>

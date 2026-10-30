@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Members</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main><div id="adm"></div>
+<div class="box"><h3 id="ft">Naya member</h3><input id="nm" placeholder="Naam"><select id="fa"></select><select id="mo"></select>
+<select id="ge"><option value="M">Male</option><option value="F">Female</option></select>
+<input id="dob" type="date"><input id="ph" placeholder="Phone"><input id="sp" placeholder="Biwi / Shauhar ka naam">
+<label class="row"><input type="checkbox" id="dd"> Marhoom</label><input type="file" id="pic" accept="image/*">
+<button class="btn g" onclick="add()" id="sv">Add member</button> <button class="btn w" onclick="reset()">Clear</button></div>
+<div class="box"><h3>Sab members</h3><table id="tb"></table></div>
+<div class="box"><h3>🗑 Trash (delete kiye hue)</h3><table id="trt"></table></div></main>
+<script src="common.js"></script><script src="admin.js"></script><script>
+header('');const $=i=>document.getElementById(i);let d=[],eid=null,photo='',C;
+const reload=async()=>{d=await load();draw()};
+guard('admin-members.html').then(async g=>{if(!g)return;C=g.C;await reload();trash()});
+async function trash(){const r=await apiJ(API,{...C,op:'trash'});trt.innerHTML=(r.j||[]).map(m=>`<tr><td>${esc(m.name)}<br><small>${esc(m._by)}</small></td><td><button class="btn g" onclick="rest(${m.id})">Wapas</button></td></tr>`).join('')||'<tr><td>Trash khali hai</td></tr>'}
+async function rest(id){if((await op(C,{op:'restore',id})).s==200){await reload();trash()}}
+function draw(){const o=t=>`<option value="">${t}</option>`+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
+ const f=fa.value,m2=mo.value;fa.innerHTML=o('Walid (father) select karein');mo.innerHTML=o('Walida (mother) select karein');fa.value=f;mo.value=m2;
+ tb.innerHTML=d.map(m=>`<tr><td>${esc(m.name)}</td><td><button class="btn" onclick="ed(${m.id})">Edit</button> <button class="btn r" onclick="del(${m.id})">Del</button></td></tr>`).join('')}
+function reset(){eid=null;photo='';['nm','dob','ph','sp'].forEach(i=>$(i).value='');dd.checked=false;pic.value='';fa.value='';mo.value='';ft.textContent='Naya member';sv.textContent='Add member'}
+function ed(id){const m=d.find(x=>x.id==id);eid=id;nm.value=m.name;fa.value=m.father||'';mo.value=m.mother||'';ge.value=m.gender||'M';dob.value=m.dob||'';ph.value=m.phone||'';sp.value=m.spouse||'';dd.checked=!!m.dead;photo=m.photo||'';ft.textContent='Edit: '+m.name;sv.textContent='Save changes';scrollTo(0,0)}
+pic.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
+async function add(){if(!nm.value.trim())return alert('Naam likhein');
+ const m={id:eid||Date.now(),name:nm.value.trim(),father:fa.value?+fa.value:null,mother:mo.value?+mo.value:null,gender:ge.value,dob:dob.value,phone:ph.value,spouse:sp.value,dead:dd.checked,photo};
+ if(m.father==m.id||m.mother==m.id)return alert('Apna walid/walida khud nahi ho sakta');
+ if((await op(C,{op:'upsert',member:m})).s==200){reset();await reload()}}
+async function del(id){if(!confirm('Delete karein? (Trash se wapas aa sakta hai)'))return;if((await op(C,{op:'remove',id})).s==200){await reload();trash()}}
+</script></body></html>

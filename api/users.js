@@ -1,11 +1,23 @@
-import { db, gate, hash, log } from './_db.js';
+import { db, gate, hash, same, log, mint } from './_db.js';
 
-// Sirf master admin (Vercel ADMIN_PASSWORD) is API ko use kar sakta hai
+// list/save/delete: sirf master. mypass: har admin apna password badal sakta hai.
 export default async function handler(req, res) {
   try {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
     const d = await db(), c = d.collection('admins'), b = req.body || {};
-    if (!(await gate(d, b, req, res, 'master'))) return;
+    const me = await gate(d, b, req, res);
+    if (!me) return;
+    if (b.action === 'mypass') {
+      if (me.role !== 'admin') return res.status(400).json({ error: 'Master ka password Vercel (ADMIN_PASSWORD) mein hai' });
+      const u = await c.findOne({ username: me.user });
+      if (!u || !same(String(b.oldPassword || ''), u.hash)) return res.status(401).json({ error: 'Purana password ghalat' });
+      if (String(b.newPassword || '').length < 6) return res.status(400).json({ error: 'Naya password kam az kam 6 harf' });
+      const h = hash(String(b.newPassword));
+      await c.updateOne({ username: me.user }, { $set: { hash: h } });
+      await log(d, me.user, 'password', 'apna password badla');
+      return res.status(200).json({ success: true, token: mint(me.user, 'admin', h.slice(-10)) });
+    }
+    if (me.role !== 'master') return res.status(401).json({ error: 'Sirf master admin' });
     if (b.action === 'list') return res.status(200).json((await c.find().toArray()).map(x => x.username));
     const u = String(b.username || '').trim().toLowerCase();
     if (!/^[a-z0-9_]{3,20}$/.test(u)) return res.status(400).json({ error: 'Username 3-20 harf (a-z, 0-9, _)' });
