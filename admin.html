@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin - Family Shajra</title>
+    <title>Admin - Family Tree</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,29 +16,29 @@
         </div>
         <div id="panel" style="display:none">
             <div class="box">
-                <h3>Naya member</h3>
-                <input id="nm" placeholder="Naam">
+                <h3>Add New Member</h3>
+                <input id="nm" placeholder="Name">
                 <select id="fa"></select>
                 <select id="ge">
                     <option value="M">Male</option>
                     <option value="F">Female</option>
                 </select>
-                <button class="btn g" onclick="add()">Add member</button>
+                <button class="btn g" onclick="add()">Add Member</button>
                 <div id="addStatus"></div>
             </div>
             <div class="box">
-                <h3>Members</h3>
+                <h3>All Members</h3>
                 <div id="loading">Loading...</div>
                 <table id="tb"></table>
             </div>
             <div class="box">
-                <h3>Data import</h3>
+                <h3>Import Data</h3>
                 <input type="file" id="fi" accept=".json">
                 <div id="importStatus"></div>
             </div>
             <div class="box">
                 <h3>Server Status</h3>
-                <div id="serverStatus">Checking server...</div>
+                <div id="serverStatus">Checking...</div>
             </div>
         </div>
     </main>
@@ -47,7 +47,6 @@
         header('');
         let d = [];
 
-        // Check server status
         async function checkServer() {
             try {
                 const response = await fetch('/api/members');
@@ -55,12 +54,10 @@
                     document.getElementById('serverStatus').innerHTML = '<span style="color:green">✅ Connected to MongoDB</span>';
                     return true;
                 } else {
-                    const error = await response.json();
-                    document.getElementById('serverStatus').innerHTML = `<span style="color:red">❌ Server error: ${error.error || 'Unknown error'}</span>`;
+                    document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server error</span>';
                 }
             } catch (error) {
-                document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server not available. Using local cache.</span>';
-                console.error('Server check error:', error);
+                document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server not available</span>';
             }
             return false;
         }
@@ -71,43 +68,46 @@
                 panel.style.display = 'block';
                 await loadData();
             } else {
-                alert('Ghalat password');
+                alert('Incorrect password');
             }
         }
 
         async function loadData() {
             try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('addStatus').innerHTML = '';
+                document.getElementById('loading').innerHTML = 'Loading...';
                 d = await getDataAsync();
                 draw();
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
                 document.getElementById('loading').innerHTML = 'Failed to load data';
-                console.error('Error loading data:', error);
+                console.error(error);
             }
         }
 
         function draw() {
-            fa.innerHTML = '<option value="">Koi father nahi (root)</option>' + d.map(m => `<option value="${m.id}">${m.name} ka beta/beti</option>`).join('');
-            tb.innerHTML = d.map(m => `<tr><td>${m.name} (${m.gender == 'F' ? 'Female' : 'Male'})</td><td><button class="btn r" onclick="del(${m.id})">Delete</button></td></tr>`).join('');
+            fa.innerHTML = '<option value="">No father (root)</option>' +
+                d.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+            tb.innerHTML = d.map(m =>
+                `<tr><td>${m.name} (${m.gender == 'F' ? 'Female' : 'Male'})</td>
+                <td><button class="btn r" onclick="del(${m.id})">Delete</button></td></tr>`
+            ).join('');
         }
 
         async function add() {
             if (!nm.value.trim()) {
-                document.getElementById('addStatus').innerHTML = '<span style="color:red">Naam khali nahi ho sakta</span>';
+                document.getElementById('addStatus').innerHTML = '<span style="color:red">Name is required</span>';
                 return;
             }
-            
+
             document.getElementById('addStatus').innerHTML = '<span style="color:blue">Adding...</span>';
-            
+
             const newMember = {
                 id: Date.now(),
                 name: nm.value.trim(),
                 father: fa.value ? parseInt(fa.value) : null,
                 gender: ge.value
             };
-            
+
             try {
                 const result = await addMemberAsync(newMember);
                 if (result) {
@@ -125,8 +125,7 @@
         }
 
         async function del(id) {
-            if (!confirm('Delete karein?')) return;
-            
+            if (!confirm('Are you sure you want to delete this member?')) return;
             try {
                 const success = await deleteMemberAsync(id);
                 if (success) {
@@ -146,24 +145,22 @@
             const r = new FileReader();
             r.onload = async () => {
                 try {
-                    const importedData = JSON.parse(r.result);
-                    const success = await saveDataAsync(importedData);
+                    const data = JSON.parse(r.result);
+                    const success = await saveDataAsync(data);
                     if (success) {
                         await loadData();
-                        document.getElementById('importStatus').innerHTML = '<span style="color:green">✅ Import successful!</span>';
+                        document.getElementById('importStatus').innerHTML = '<span style="color:green">✅ Data imported successfully!</span>';
                         setTimeout(() => document.getElementById('importStatus').innerHTML = '', 3000);
                     } else {
-                        document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Import failed</span>';
+                        document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Failed to import data</span>';
                     }
                 } catch (x) {
                     document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Invalid file format</span>';
-                    console.error('Import error:', x);
                 }
             };
             r.readAsText(e.target.files[0]);
         };
 
-        // Initialize
         checkServer();
     </script>
 </body>

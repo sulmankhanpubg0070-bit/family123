@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const db = client.db('family_tree');
     const collection = db.collection('family_members');
 
-    // Check if collection is empty and insert sample data
+    // Auto-insert sample data if collection is empty
     const count = await collection.countDocuments();
     if (count === 0) {
       await collection.insertMany(SAMPLE_DATA);
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       const { password, members, ...data } = req.body;
       
       if (password !== process.env.ADMIN_PASSWORD) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized - Invalid password' });
       }
       
       // Handle bulk import
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
     else if (req.method === 'PUT') {
       const { id, password, ...data } = req.body;
       if (password !== process.env.ADMIN_PASSWORD) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized - Invalid password' });
       }
       const result = await collection.updateOne(
         { id: parseInt(id) },
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
     else if (req.method === 'DELETE') {
       const { id, password } = req.body;
       if (password !== process.env.ADMIN_PASSWORD) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized - Invalid password' });
       }
       await collection.deleteOne({ id: parseInt(id) });
       await collection.updateMany(
@@ -79,6 +79,9 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('MongoDB Error:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ 
+      error: 'Internal server error', 
+      details: error.message 
+    });
   }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Stats - Family Shajra</title>
+    <title>Stats - Family Tree</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <main>
         <div class="stat" id="st"></div>
         <div class="box" style="margin-top:14px">
-            <h3>Sab members</h3>
+            <h3>All Members</h3>
             <div id="loading">Loading...</div>
             <table id="tb"></table>
         </div>
@@ -45,12 +45,11 @@
             `;
             
             const kids = id => members.filter(x => x.father == id).length;
-            document.getElementById('tb').innerHTML = members.map(m => 
-                `<tr><td>${m.name}</td><td>${m.gender === 'F' ? 'F' : 'M'}</td><td>${kids(m.id)} bachay</td></tr>`
+            document.getElementById('tb').innerHTML = members.map(m =>
+                `<tr><td>${m.name}</td><td>${m.gender === 'F' ? 'F' : 'M'}</td><td>${kids(m.id)} children</td></tr>`
             ).join('');
         }
 
-        // Load stats on page load
         loadStats();
     </script>
 </body>

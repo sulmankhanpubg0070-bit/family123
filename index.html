@@ -13,16 +13,16 @@
         <select id="root"></select>
         <div class="bar">
             <button class="btn w" id="zo">-</button>
-            <button class="btn w" id="zr">⟳</button>
+            <button class="btn w" id="zr">Reset</button>
             <button class="btn w" id="zi">+</button>
-            <button class="btn g" id="img">⬇ Save as Image</button>
+            <button class="btn g" id="img">Save as Image</button>
             <button class="btn" id="hv">Horizontal</button>
         </div>
         <div id="serverInfo"></div>
-        <h2 class="t">🌳 فیملی کا شجرہ</h2>
+        <h2 class="t">🌳 Family Tree</h2>
         <div id="wrap">
             <div id="zoom">
-                <div class="empty">فیملی ڈیکھنے کے لئے اوپر سیکشن میں کوئ ممبر منخب کریں</div>
+                <div class="empty">Select a root member to view family tree</div>
             </div>
         </div>
     </main>
@@ -34,16 +34,15 @@
         let s = 1, hor = false;
         let currentData = [];
 
-        // Load data from MongoDB via API
         async function initialize() {
             try {
-                document.getElementById('serverInfo').innerHTML = '<span style="color:blue">Loading data from MongoDB...</span>';
+                document.getElementById('serverInfo').innerHTML = '<span style="color:blue">Loading from MongoDB...</span>';
                 currentData = await getDataAsync();
                 updateRootSelect();
-                document.getElementById('serverInfo').innerHTML = '<span style="color:green">✅ Connected to MongoDB - Data loaded successfully!</span>';
+                document.getElementById('serverInfo').innerHTML = '<span style="color:green">✅ Connected to MongoDB!</span>';
             } catch (error) {
-                console.error('Error loading data:', error);
-                document.getElementById('serverInfo').innerHTML = '<span style="color:orange">⚠️ Using local sample data</span>';
+                console.error('Error:', error);
+                document.getElementById('serverInfo').innerHTML = '<span style="color:orange">⚠️ Using sample data</span>';
                 currentData = getData();
                 updateRootSelect();
             }
@@ -51,7 +50,7 @@
 
         function updateRootSelect() {
             const sel = document.getElementById('root');
-            sel.innerHTML = '<option value="">-- Root member select karein --</option>' + 
+            sel.innerHTML = '<option value="">-- Root member select karein --</option>' +
                 currentData.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
         }
 
@@ -63,19 +62,17 @@
                     <small>${m.gender == 'F' ? 'Female' : 'Male'}</small>
                 </div>
                 ${k.length ? `<div class="kids">${k.map(node).join('')}</div>` : ''}
-            </div>`
+            </div>`;
         }
 
         function draw() {
             const sel = document.getElementById('root');
             const m = currentData.find(x => x.id == sel.value);
             z.className = hor ? 'h' : '';
-            z.innerHTML = m ? node(m) : '<div class="empty">فیملی ڈیکھنے کے لئے اوپر سیکشن میں کوئ ممبر منخب کریں</div>'
+            z.innerHTML = m ? node(m) : '<div class="empty">Select a root member to view family tree</div>';
         }
 
-        function zm() {
-            z.style.transform = `scale(${s})`
-        }
+        function zm() { z.style.transform = `scale(${s})`; }
 
         document.getElementById('root').onchange = draw;
         document.getElementById('zo').onclick = () => { s += .1; zm() };
@@ -84,11 +81,11 @@
         document.getElementById('hv').onclick = () => { 
             hor = !hor; 
             document.getElementById('hv').textContent = hor ? 'Vertical' : 'Horizontal'; 
-            draw() 
+            draw(); 
         };
 
         document.getElementById('img').onclick = () => {
-            if (!document.getElementById('root').value) return alert('Pehle root member select karein');
+            if (!document.getElementById('root').value) return alert('Please select a root member first');
             const o = z.style.transform;
             z.style.transform = 'none';
             html2canvas(z, { backgroundColor: '#fff', scale: 2 }).then(c => {
@@ -96,11 +93,10 @@
                 const a = document.createElement('a');
                 a.href = c.toDataURL();
                 a.download = 'shajra.png';
-                a.click()
+                a.click();
             });
         };
 
-        // Initialize on page load
         initialize();
     </script>
 </body>

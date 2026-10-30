@@ -21,7 +21,8 @@ async function fetchData() {
   try {
     const response = await fetch(API_BASE);
     if (!response.ok) {
-      console.error('API Error:', response.status, response.statusText);
+      const error = await response.json();
+      console.error('API Error:', response.status, error);
       throw new Error('API request failed');
     }
     const data = await response.json();
@@ -54,8 +55,8 @@ async function saveDataAsync(data) {
       body: JSON.stringify({ members: data, password: ADMIN_PASSWORD })
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Save Error:', errorData);
+      const error = await response.json();
+      console.error('Save Error:', error);
       throw new Error('Failed to save data');
     }
     dataCache = null;
@@ -75,8 +76,8 @@ async function addMemberAsync(member) {
       body: JSON.stringify({ ...member, password: ADMIN_PASSWORD })
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Add Error:', errorData);
+      const error = await response.json();
+      console.error('Add Error:', error);
       throw new Error('Failed to add member');
     }
     dataCache = null;
@@ -96,8 +97,8 @@ async function deleteMemberAsync(id) {
       body: JSON.stringify({ id, password: ADMIN_PASSWORD })
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Delete Error:', errorData);
+      const error = await response.json();
+      console.error('Delete Error:', error);
       throw new Error('Failed to delete member');
     }
     dataCache = null;
@@ -108,26 +109,10 @@ async function deleteMemberAsync(id) {
   }
 }
 
-// Get stats
-async function getStatsAsync() {
-  try {
-    const data = await getDataAsync();
-    return {
-      total: data.length,
-      males: data.filter(x => x.gender === 'M').length,
-      females: data.filter(x => x.gender === 'F').length,
-      roots: data.filter(x => !x.father).length
-    };
-  } catch (error) {
-    console.error('Failed to fetch stats:', error);
-    return { total: 0, males: 0, females: 0, roots: 0 };
-  }
-}
-
 // Header function
 function header(on) {
   document.getElementById('hdr').innerHTML = `<div class="top">
-    <span class="logo">Family Shajra</span>
+    <span class="logo">Family Tree</span>
     <a class="btn r" href="admin.html">🔑 Admin</a>
   </div>
   <nav>
@@ -145,7 +130,7 @@ function header(on) {
   const b = document.getElementById('menuBox');
   document.getElementById('mb').onclick = e => {
     e.preventDefault();
-    b.style.display = b.style.display == 'block' ? 'none' : 'block'
+    b.style.display = b.style.display == 'block' ? 'none' : 'block';
   };
   
   document.getElementById('exp').onclick = async e => {
@@ -153,7 +138,7 @@ function header(on) {
     const data = await getDataAsync();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
-    a.download = 'shajra-data.json';
+    a.download = 'family-data.json';
     a.click();
   };
 }
