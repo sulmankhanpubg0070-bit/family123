@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Stats</title>
+    <title>Stats - Family Shajra</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,11 +23,13 @@
 
         async function loadStats() {
             try {
+                document.getElementById('loading').innerHTML = 'Loading from MongoDB...';
                 const members = await getDataAsync();
                 d = members;
                 updateStats(members);
             } catch (error) {
                 console.error('Error loading from API:', error);
+                document.getElementById('loading').innerHTML = 'Using local data';
                 d = getData();
                 updateStats(d);
             }

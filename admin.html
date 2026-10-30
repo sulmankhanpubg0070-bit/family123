@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin</title>
+    <title>Admin - Family Shajra</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,6 +24,7 @@
                     <option value="F">Female</option>
                 </select>
                 <button class="btn g" onclick="add()">Add member</button>
+                <div id="addStatus"></div>
             </div>
             <div class="box">
                 <h3>Members</h3>
@@ -33,6 +34,7 @@
             <div class="box">
                 <h3>Data import</h3>
                 <input type="file" id="fi" accept=".json">
+                <div id="importStatus"></div>
             </div>
             <div class="box">
                 <h3>Server Status</h3>
@@ -52,10 +54,13 @@
                 if (response.ok) {
                     document.getElementById('serverStatus').innerHTML = '<span style="color:green">✅ Connected to MongoDB</span>';
                     return true;
+                } else {
+                    const error = await response.json();
+                    document.getElementById('serverStatus').innerHTML = `<span style="color:red">❌ Server error: ${error.error || 'Unknown error'}</span>`;
                 }
             } catch (error) {
                 document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server not available. Using local cache.</span>';
-                return false;
+                console.error('Server check error:', error);
             }
             return false;
         }
@@ -73,6 +78,7 @@
         async function loadData() {
             try {
                 document.getElementById('loading').style.display = 'block';
+                document.getElementById('addStatus').innerHTML = '';
                 d = await getDataAsync();
                 draw();
                 document.getElementById('loading').style.display = 'none';
@@ -88,7 +94,12 @@
         }
 
         async function add() {
-            if (!nm.value.trim()) return;
+            if (!nm.value.trim()) {
+                document.getElementById('addStatus').innerHTML = '<span style="color:red">Naam khali nahi ho sakta</span>';
+                return;
+            }
+            
+            document.getElementById('addStatus').innerHTML = '<span style="color:blue">Adding...</span>';
             
             const newMember = {
                 id: Date.now(),
@@ -97,27 +108,41 @@
                 gender: ge.value
             };
             
-            const result = await addMemberAsync(newMember);
-            if (result) {
-                await loadData();
-                nm.value = '';
-            } else {
-                alert('Failed to add member. Check server connection.');
+            try {
+                const result = await addMemberAsync(newMember);
+                if (result) {
+                    await loadData();
+                    nm.value = '';
+                    document.getElementById('addStatus').innerHTML = '<span style="color:green">✅ Member added successfully!</span>';
+                    setTimeout(() => document.getElementById('addStatus').innerHTML = '', 3000);
+                } else {
+                    document.getElementById('addStatus').innerHTML = '<span style="color:red">❌ Failed to add member</span>';
+                }
+            } catch (error) {
+                document.getElementById('addStatus').innerHTML = `<span style="color:red">❌ Error: ${error.message}</span>`;
+                console.error('Add error:', error);
             }
         }
 
         async function del(id) {
             if (!confirm('Delete karein?')) return;
             
-            const success = await deleteMemberAsync(id);
-            if (success) {
-                await loadData();
-            } else {
-                alert('Failed to delete member. Check server connection.');
+            try {
+                const success = await deleteMemberAsync(id);
+                if (success) {
+                    await loadData();
+                    alert('Member deleted successfully');
+                } else {
+                    alert('Failed to delete member');
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+                console.error('Delete error:', error);
             }
         }
 
         fi.onchange = async e => {
+            document.getElementById('importStatus').innerHTML = '<span style="color:blue">Importing...</span>';
             const r = new FileReader();
             r.onload = async () => {
                 try {
@@ -125,12 +150,14 @@
                     const success = await saveDataAsync(importedData);
                     if (success) {
                         await loadData();
-                        alert('Import ho gaya');
+                        document.getElementById('importStatus').innerHTML = '<span style="color:green">✅ Import successful!</span>';
+                        setTimeout(() => document.getElementById('importStatus').innerHTML = '', 3000);
                     } else {
-                        alert('Import failed. Check server connection.');
+                        document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Import failed</span>';
                     }
                 } catch (x) {
-                    alert('File sahi nahi');
+                    document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Invalid file format</span>';
+                    console.error('Import error:', x);
                 }
             };
             r.readAsText(e.target.files[0]);

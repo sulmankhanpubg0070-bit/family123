@@ -4,11 +4,29 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
+// Sample data to insert if collection is empty
+const SAMPLE_DATA = [
+  {id: 1, name: 'Dada Ji', father: null, gender: 'M'},
+  {id: 2, name: 'Ahmad', father: 1, gender: 'M'},
+  {id: 3, name: 'Bilal', father: 1, gender: 'M'},
+  {id: 4, name: 'Aisha', father: 1, gender: 'F'},
+  {id: 5, name: 'Usman', father: 2, gender: 'M'},
+  {id: 6, name: 'Fatima', father: 2, gender: 'F'},
+  {id: 7, name: 'Hamza', father: 3, gender: 'M'}
+];
+
 export default async function handler(req, res) {
   try {
     await client.connect();
     const db = client.db('family_tree');
     const collection = db.collection('family_members');
+
+    // Check if collection is empty and insert sample data
+    const count = await collection.countDocuments();
+    if (count === 0) {
+      await collection.insertMany(SAMPLE_DATA);
+      console.log('Sample data inserted into family_members collection');
+    }
 
     // Handle different HTTP methods
     if (req.method === 'GET') {
@@ -60,7 +78,7 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('MongoDB Error:', error);
+    return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 }

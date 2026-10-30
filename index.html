@@ -37,12 +37,13 @@
         // Load data from MongoDB via API
         async function initialize() {
             try {
+                document.getElementById('serverInfo').innerHTML = '<span style="color:blue">Loading data from MongoDB...</span>';
                 currentData = await getDataAsync();
                 updateRootSelect();
-                document.getElementById('serverInfo').innerHTML = '<span style="color:green">✅ Connected to MongoDB</span>';
+                document.getElementById('serverInfo').innerHTML = '<span style="color:green">✅ Connected to MongoDB - Data loaded successfully!</span>';
             } catch (error) {
                 console.error('Error loading data:', error);
-                document.getElementById('serverInfo').innerHTML = '<span style="color:orange">⚠️ Using local data</span>';
+                document.getElementById('serverInfo').innerHTML = '<span style="color:orange">⚠️ Using local sample data</span>';
                 currentData = getData();
                 updateRootSelect();
             }

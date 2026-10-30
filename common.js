@@ -20,7 +20,10 @@ let dataCache = null;
 async function fetchData() {
   try {
     const response = await fetch(API_BASE);
-    if (!response.ok) throw new Error('API request failed');
+    if (!response.ok) {
+      console.error('API Error:', response.status, response.statusText);
+      throw new Error('API request failed');
+    }
     const data = await response.json();
     dataCache = data;
     return data;
@@ -45,13 +48,16 @@ function getData() {
 // Save data (import all members)
 async function saveDataAsync(data) {
   try {
-    // For bulk import
     const response = await fetch(API_BASE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ members: data, password: ADMIN_PASSWORD })
     });
-    if (!response.ok) throw new Error('Failed to save data');
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Save Error:', errorData);
+      throw new Error('Failed to save data');
+    }
     dataCache = null;
     return true;
   } catch (error) {
@@ -68,7 +74,11 @@ async function addMemberAsync(member) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...member, password: ADMIN_PASSWORD })
     });
-    if (!response.ok) throw new Error('Failed to add member');
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Add Error:', errorData);
+      throw new Error('Failed to add member');
+    }
     dataCache = null;
     return await response.json();
   } catch (error) {
@@ -85,7 +95,11 @@ async function deleteMemberAsync(id) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, password: ADMIN_PASSWORD })
     });
-    if (!response.ok) throw new Error('Failed to delete member');
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Delete Error:', errorData);
+      throw new Error('Failed to delete member');
+    }
     dataCache = null;
     return true;
   } catch (error) {
