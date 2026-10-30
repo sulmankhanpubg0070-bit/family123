@@ -2,36 +2,44 @@ import { MongoClient } from 'mongodb';
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto';
 let client;
 export async function db() {
-  if (!client) { client = new MongoClient(String(process.env.MONGODB_URI || '').trim()); await client.connect(); }
+  if (!client) {
+    // 5 second mein connect na ho to saaf error aaye (Vercel ka lamba timeout nahi)
+    const c = new MongoClient(String(process.env.MONGODB_URI || '').trim(), { serverSelectionTimeoutMS: 5000, connectTimeoutMS: 5000 });
+    await c.connect();
+    client = c;
+  }
   return client.db('family_tree');
 }
 export const hash = p => { const s = randomBytes(16).toString('hex'); return s + ':' + scryptSync(p, s, 32).toString('hex'); };
 const same = (p, h) => { const [s, x] = h.split(':'); const a = Buffer.from(scryptSync(p, s, 32).toString('hex')), b = Buffer.from(x); return a.length === b.length && timingSafeEqual(a, b); };
 
-// 'master' | 'admin' | 'locked' | null. 5 ghalat koshishon par 15 minute ka lock.
+const LOCK = 2 * 60000; // 5 ghalat koshishon ke baad 2 minute ka lock
+// 'master' | 'admin' | 'locked' | null
 // Master password ke aage peeche ke space (phone keyboard) nazar andaz hote hain.
 export async function auth(d, b, req) {
   const { user, password } = b || {};
   if (!password) return null;
   const ip = String(req?.headers?.['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
   const k = ip + '|' + String(user || '').trim().toLowerCase(), c = d.collection('attempts');
-  const a = await c.findOne({ _id: k });
+  let a = await c.findOne({ _id: k });
+  // Purane 15 minute wale lock ko khatam karo
+  if (a && a.until - Date.now() > LOCK) { await c.deleteOne({ _id: k }); a = null; }
   if (a && a.until > Date.now()) return 'locked';
   let r = null;
-  if (!user) { if (String(password).trim() === String(process.env.ADMIN_PASSWORD || '').trim() && process.env.ADMIN_PASSWORD) r = 'master'; }
+  if (!user) { if (process.env.ADMIN_PASSWORD && String(password).trim() === String(process.env.ADMIN_PASSWORD).trim()) r = 'master'; }
   else {
     const u = await d.collection('admins').findOne({ username: String(user).trim().toLowerCase() });
     if (u && same(String(password), u.hash)) r = 'admin';
   }
   if (r) { if (a) await c.deleteOne({ _id: k }); return r; }
   const n = (a?.n || 0) + 1;
-  await c.updateOne({ _id: k }, { $set: { n: n >= 5 ? 0 : n, until: n >= 5 ? Date.now() + 15 * 60000 : 0 } }, { upsert: true });
+  await c.updateOne({ _id: k }, { $set: { n: n >= 5 ? 0 : n, until: n >= 5 ? Date.now() + LOCK : 0 } }, { upsert: true });
   return null;
 }
 // Role wapas karta hai, ya khud jawab bhej kar null
 export async function gate(d, b, req, res, need) {
   const r = await auth(d, b, req);
-  if (r === 'locked') { res.status(429).json({ error: 'Bohat ghalat koshishen. 15 minute baad try karein' }); return null; }
+  if (r === 'locked') { res.status(429).json({ error: 'Bohat ghalat koshishen. 2 minute baad try karein' }); return null; }
   if (!r || (need === 'master' && r !== 'master')) { res.status(401).json({ error: 'Unauthorized' }); return null; }
   return r;
 }
