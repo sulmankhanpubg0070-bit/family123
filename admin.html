@@ -1,167 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin - Family Tree</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="hdr"></div>
-    <main>
-        <div class="box" id="login">
-            <h3>Admin login</h3>
-            <input id="pw" type="password" placeholder="Password">
-            <button class="btn" onclick="go()">Login</button>
-        </div>
-        <div id="panel" style="display:none">
-            <div class="box">
-                <h3>Add New Member</h3>
-                <input id="nm" placeholder="Name">
-                <select id="fa"></select>
-                <select id="ge">
-                    <option value="M">Male</option>
-                    <option value="F">Female</option>
-                </select>
-                <button class="btn g" onclick="add()">Add Member</button>
-                <div id="addStatus"></div>
-            </div>
-            <div class="box">
-                <h3>All Members</h3>
-                <div id="loading">Loading...</div>
-                <table id="tb"></table>
-            </div>
-            <div class="box">
-                <h3>Import Data</h3>
-                <input type="file" id="fi" accept=".json">
-                <div id="importStatus"></div>
-            </div>
-            <div class="box">
-                <h3>Server Status</h3>
-                <div id="serverStatus">Checking...</div>
-            </div>
-        </div>
-    </main>
-    <script src="common.js"></script>
-    <script>
-        header('');
-        let d = [];
-
-        async function checkServer() {
-            try {
-                const response = await fetch('/api/members');
-                if (response.ok) {
-                    document.getElementById('serverStatus').innerHTML = '<span style="color:green">✅ Connected to MongoDB</span>';
-                    return true;
-                } else {
-                    document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server error</span>';
-                }
-            } catch (error) {
-                document.getElementById('serverStatus').innerHTML = '<span style="color:red">❌ Server not available</span>';
-            }
-            return false;
-        }
-
-        async function go() {
-            if (pw.value == ADMIN_PASSWORD) {
-                login.style.display = 'none';
-                panel.style.display = 'block';
-                await loadData();
-            } else {
-                alert('Incorrect password');
-            }
-        }
-
-        async function loadData() {
-            try {
-                document.getElementById('loading').innerHTML = 'Loading...';
-                d = await getDataAsync();
-                draw();
-                document.getElementById('loading').style.display = 'none';
-            } catch (error) {
-                document.getElementById('loading').innerHTML = 'Failed to load data';
-                console.error(error);
-            }
-        }
-
-        function draw() {
-            fa.innerHTML = '<option value="">No father (root)</option>' +
-                d.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-            tb.innerHTML = d.map(m =>
-                `<tr><td>${m.name} (${m.gender == 'F' ? 'Female' : 'Male'})</td>
-                <td><button class="btn r" onclick="del(${m.id})">Delete</button></td></tr>`
-            ).join('');
-        }
-
-        async function add() {
-            if (!nm.value.trim()) {
-                document.getElementById('addStatus').innerHTML = '<span style="color:red">Name is required</span>';
-                return;
-            }
-
-            document.getElementById('addStatus').innerHTML = '<span style="color:blue">Adding...</span>';
-
-            const newMember = {
-                id: Date.now(),
-                name: nm.value.trim(),
-                father: fa.value ? parseInt(fa.value) : null,
-                gender: ge.value
-            };
-
-            try {
-                const result = await addMemberAsync(newMember);
-                if (result) {
-                    await loadData();
-                    nm.value = '';
-                    document.getElementById('addStatus').innerHTML = '<span style="color:green">✅ Member added successfully!</span>';
-                    setTimeout(() => document.getElementById('addStatus').innerHTML = '', 3000);
-                } else {
-                    document.getElementById('addStatus').innerHTML = '<span style="color:red">❌ Failed to add member</span>';
-                }
-            } catch (error) {
-                document.getElementById('addStatus').innerHTML = `<span style="color:red">❌ Error: ${error.message}</span>`;
-                console.error('Add error:', error);
-            }
-        }
-
-        async function del(id) {
-            if (!confirm('Are you sure you want to delete this member?')) return;
-            try {
-                const success = await deleteMemberAsync(id);
-                if (success) {
-                    await loadData();
-                    alert('Member deleted successfully');
-                } else {
-                    alert('Failed to delete member');
-                }
-            } catch (error) {
-                alert(`Error: ${error.message}`);
-                console.error('Delete error:', error);
-            }
-        }
-
-        fi.onchange = async e => {
-            document.getElementById('importStatus').innerHTML = '<span style="color:blue">Importing...</span>';
-            const r = new FileReader();
-            r.onload = async () => {
-                try {
-                    const data = JSON.parse(r.result);
-                    const success = await saveDataAsync(data);
-                    if (success) {
-                        await loadData();
-                        document.getElementById('importStatus').innerHTML = '<span style="color:green">✅ Data imported successfully!</span>';
-                        setTimeout(() => document.getElementById('importStatus').innerHTML = '', 3000);
-                    } else {
-                        document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Failed to import data</span>';
-                    }
-                } catch (x) {
-                    document.getElementById('importStatus').innerHTML = '<span style="color:red">❌ Invalid file format</span>';
-                }
-            };
-            r.readAsText(e.target.files[0]);
-        };
-
-        checkServer();
-    </script>
-</body>
-</html>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"></head><body>
+<div id="hdr"></div><main>
+<div class="box" id="login"><h3>Admin login</h3><input id="pw" type="password" placeholder="Admin password"><button class="btn" onclick="go()">Login</button></div>
+<div id="panel" style="display:none">
+<div class="box"><h3 id="ft">Naya member</h3><input id="nm" placeholder="Naam"><select id="fa"></select>
+<select id="ge"><option value="M">Male</option><option value="F">Female</option></select>
+<input id="dob" type="date"><input id="ph" placeholder="Phone"><input id="sp" placeholder="Biwi / Shauhar ka naam">
+<label class="row"><input type="checkbox" id="dd"> Marhoom</label><input type="file" id="pic" accept="image/*">
+<button class="btn g" onclick="add()" id="sv">Add member</button> <button class="btn w" onclick="reset()">Clear</button></div>
+<div class="box"><h3>Members</h3><table id="tb"></table></div>
+<div class="box"><h3>Data import</h3><input type="file" id="fi" accept=".json"></div></div></main>
+<script src="common.js"></script><script>
+header('');const $=i=>document.getElementById(i);let d=[],eid=null,photo='',PW='';
+load().then(x=>d=x);
+async function go(){const s=await api('DELETE',{id:-1,password:pw.value});
+ if(s==200){PW=pw.value;login.style.display='none';panel.style.display='block';draw()}else alert(s==401?'Ghalat password':'Server se rabta nahi hua (MongoDB / ADMIN_PASSWORD check karein)')}
+function draw(){fa.innerHTML='<option value="">Koi father nahi (root)</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)} ka beta/beti</option>`).join('');
+ tb.innerHTML=d.map(m=>`<tr><td>${esc(m.name)}</td><td><button class="btn" onclick="ed(${m.id})">Edit</button> <button class="btn r" onclick="del(${m.id})">Del</button></td></tr>`).join('')}
+function reset(){eid=null;photo='';['nm','dob','ph','sp'].forEach(i=>$(i).value='');dd.checked=false;pic.value='';fa.value='';ft.textContent='Naya member';sv.textContent='Add member'}
+function ed(id){const m=d.find(x=>x.id==id);eid=id;nm.value=m.name;fa.value=m.father||'';ge.value=m.gender||'M';dob.value=m.dob||'';ph.value=m.phone||'';sp.value=m.spouse||'';dd.checked=!!m.dead;photo=m.photo||'';ft.textContent='Edit: '+m.name;sv.textContent='Save changes';scrollTo(0,0)}
+pic.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
+async function commit(n){const o=d;d=n;if(await save(d,PW))return true;d=o;return false}
+async function add(){if(!nm.value.trim())return alert('Naam likhein');
+ const m={id:eid||Date.now(),name:nm.value.trim(),father:fa.value?+fa.value:null,gender:ge.value,dob:dob.value,phone:ph.value,spouse:sp.value,dead:dd.checked,photo};
+ if(m.father==m.id)return alert('Apna walid khud nahi ho sakta');
+ if(await commit(eid?d.map(x=>x.id==eid?m:x):d.concat(m))){reset();draw()}}
+async function del(id){if(!confirm('Delete karein?'))return;if(await commit(d.filter(x=>x.id!=id).map(x=>x.father==id?{...x,father:null}:x)))draw()}
+fi.onchange=e=>{const r=new FileReader();r.onload=async()=>{try{const n=JSON.parse(r.result);if(await commit(n)){draw();alert('Import ho gaya')}}catch(x){alert('File sahi nahi')}};r.readAsText(e.target.files[0])};
+</script></body></html>

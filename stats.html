@@ -1,56 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Stats - Family Tree</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="hdr"></div>
-    <main>
-        <div class="stat" id="st"></div>
-        <div class="box" style="margin-top:14px">
-            <h3>All Members</h3>
-            <div id="loading">Loading...</div>
-            <table id="tb"></table>
-        </div>
-    </main>
-    <script src="common.js"></script>
-    <script>
-        header('stats');
-        let d = [];
-
-        async function loadStats() {
-            try {
-                document.getElementById('loading').innerHTML = 'Loading from MongoDB...';
-                const members = await getDataAsync();
-                d = members;
-                updateStats(members);
-            } catch (error) {
-                console.error('Error loading from API:', error);
-                document.getElementById('loading').innerHTML = 'Using local data';
-                d = getData();
-                updateStats(d);
-            }
-        }
-
-        function updateStats(members) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('st').innerHTML = `
-                <div><b>${members.length}</b> Total members</div>
-                <div><b>${members.filter(x => x.gender === 'M').length}</b> Male</div>
-                <div><b>${members.filter(x => x.gender === 'F').length}</b> Female</div>
-                <div><b>${members.filter(x => !x.father).length}</b> Root members</div>
-            `;
-            
-            const kids = id => members.filter(x => x.father == id).length;
-            document.getElementById('tb').innerHTML = members.map(m =>
-                `<tr><td>${m.name}</td><td>${m.gender === 'F' ? 'F' : 'M'}</td><td>${kids(m.id)} children</td></tr>`
-            ).join('');
-        }
-
-        loadStats();
-    </script>
-</body>
-</html>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"></head><body>
+<div id="hdr"></div><main><div class="stat" id="st"></div>
+<div class="box" style="margin-top:14px"><h3>Male / Female</h3><div id="c1"></div></div>
+<div class="box"><h3>Peediyon ki tadad</h3><div id="c2"></div></div>
+<div class="box"><h3>Khaas maloomat</h3><div id="info"></div></div></main>
+<script src="common.js"></script><script>
+header('stats');
+const bar=(l,v,t)=>`<div>${l}</div><div class="bar2"><i style="width:${Math.max(8,v/t*100)}%">${v}</i></div>`;
+load().then(d=>{const M=d.filter(x=>x.gender!='F').length,F=d.length-M,dead=d.filter(x=>x.dead).length;
+ const gen=m=>{let g=1,p=d.find(x=>x.id==m.father);while(p&&g<50){g++;p=d.find(x=>x.id==p.father)}return g};
+ const G={};d.forEach(m=>{const g=gen(m);G[g]=(G[g]||0)+1});
+ st.innerHTML=`<div><b>${d.length}</b>Total members</div><div><b>${Object.keys(G).length}</b>Peediyan</div><div><b>${d.length-dead}</b>Zinda</div><div><b>${dead}</b>Marhoom</div>`;
+ c1.innerHTML=bar('Male',M,d.length)+bar('Female',F,d.length);
+ c2.innerHTML=Object.keys(G).map(g=>bar('Peedi '+g,G[g],d.length)).join('');
+ const L=d.filter(x=>x.dob&&!x.dead).sort((a,b)=>new Date(a.dob)-new Date(b.dob));
+ const kc=m=>d.filter(x=>x.father==m.id).length,big=d.slice().sort((a,b)=>kc(b)-kc(a))[0];
+ info.innerHTML=`${L.length?`<p>Sab se bari umar: <b>${esc(L[0].name)}</b> (${age(L[0])})</p><p>Sab se choti umar: <b>${esc(L[L.length-1].name)}</b> (${age(L[L.length-1])})</p>`:''}<p>Sab se ziyada bachay: <b>${esc(big.name)}</b> (${kc(big)})</p>`});
+</script></body></html>
