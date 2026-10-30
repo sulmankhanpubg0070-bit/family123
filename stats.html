@@ -1,45 +1,55 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stats</title><link rel="stylesheet" href="style.css"></head><body>
-<div id="hdr"></div><main><div class="stat" id="st"></div><div class="box" style="margin-top:14px"><h3>Sab members</h3><div id="loading">Loading...</div><table id="tb"></table></div></main>
-<script src="common.js"></script><script>
-header('stats');
-let d = [];
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Stats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="hdr"></div>
+    <main>
+        <div class="stat" id="st"></div>
+        <div class="box" style="margin-top:14px">
+            <h3>Sab members</h3>
+            <div id="loading">Loading...</div>
+            <table id="tb"></table>
+        </div>
+    </main>
+    <script src="common.js"></script>
+    <script>
+        header('stats');
+        let d = [];
 
-async function loadStats() {
-  try {
-    // Try to get from API first
-    const stats = await getStatsAsync();
-    const members = await getDataAsync();
-    d = members;
-    updateStats(stats, members);
-  } catch (error) {
-    console.error('Error loading from API:', error);
-    // Fallback to local data
-    d = getData();
-    const stats = {
-      total: d.length,
-      males: d.filter(x => x.gender == 'M').length,
-      females: d.filter(x => x.gender == 'F').length,
-      roots: d.filter(x => !x.father).length
-    };
-    updateStats(stats, d);
-  }
-}
+        async function loadStats() {
+            try {
+                const members = await getDataAsync();
+                d = members;
+                updateStats(members);
+            } catch (error) {
+                console.error('Error loading from API:', error);
+                d = getData();
+                updateStats(d);
+            }
+        }
 
-function updateStats(stats, members) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('st').innerHTML = `
-    <div><b>${stats.total}</b> Total members</div>
-    <div><b>${stats.males}</b> Male</div>
-    <div><b>${stats.females}</b> Female</div>
-    <div><b>${stats.roots}</b> Root members</div>
-  `;
-  
-  const kids = id => members.filter(x => x.father == id).length;
-  document.getElementById('tb').innerHTML = members.map(m => 
-    `<tr><td>${m.name}</td><td>${m.gender == 'F' ? 'F' : 'M'}</td><td>${kids(m.id)} bachay</td></tr>`
-  ).join('');
-}
+        function updateStats(members) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('st').innerHTML = `
+                <div><b>${members.length}</b> Total members</div>
+                <div><b>${members.filter(x => x.gender === 'M').length}</b> Male</div>
+                <div><b>${members.filter(x => x.gender === 'F').length}</b> Female</div>
+                <div><b>${members.filter(x => !x.father).length}</b> Root members</div>
+            `;
+            
+            const kids = id => members.filter(x => x.father == id).length;
+            document.getElementById('tb').innerHTML = members.map(m => 
+                `<tr><td>${m.name}</td><td>${m.gender === 'F' ? 'F' : 'M'}</td><td>${kids(m.id)} bachay</td></tr>`
+            ).join('');
+        }
 
-// Load stats on page load
-loadStats();
-</script></body></html>
+        // Load stats on page load
+        loadStats();
+    </script>
+</body>
+</html>

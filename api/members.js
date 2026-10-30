@@ -16,10 +16,20 @@ export default async function handler(req, res) {
       return res.status(200).json(members);
     }
     else if (req.method === 'POST') {
-      const { password, ...data } = req.body;
+      const { password, members, ...data } = req.body;
+      
       if (password !== process.env.ADMIN_PASSWORD) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
+      
+      // Handle bulk import
+      if (members && Array.isArray(members)) {
+        await collection.deleteMany({});
+        await collection.insertMany(members);
+        return res.status(201).json({ success: true, message: 'Bulk import successful' });
+      }
+      
+      // Handle single member
       const result = await collection.insertOne(data);
       return res.status(201).json({ ...data, _id: result.insertedId });
     }
