@@ -4,20 +4,71 @@
 <select id="root"></select>
 <div class="bar"><button class="btn w" id="zo">−</button><button class="btn w" id="zr">⟳</button><button class="btn w" id="zi">+</button>
 <button class="btn g" id="img">⬇ Save as Image</button><button class="btn" id="hv">Horizontal</button></div>
-<h2 class="t">🌳 فیملی کا شجرہ</h2>
-<div id="wrap"><div id="zoom"><div class="empty">فیملی دیکھنے کے لیے اوپر سے کوئی رُوٹ (بنیادی ممبر) منتخب کریں۔</div></div></div></main>
+<div id="serverInfo"></div>
+<h2 class="t">🌳 فیملی کا شجره</h2>
+<div id="wrap"><div id="zoom"><div class="empty">فیملی ڈیکھنے کے لئے اوپر سیکشن میں کوئ ممبر منخب کریں</div></div></div></main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="common.js"></script><script>
 header('home');
-const data=getData(),sel=document.getElementById('root'),z=document.getElementById('zoom');let s=1,hor=false;
-sel.innerHTML='<option value="">-- Root member select karein --</option>'+data.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
-function node(m){const k=data.filter(x=>x.father==m.id);
-return `<div class="node"><div class="card ${m.gender=='F'?'f':''}"><b>${m.name}</b><small>${m.gender=='F'?'Female':'Male'}</small></div>${k.length?`<div class="kids">${k.map(node).join('')}</div>`:''}</div>`}
-function draw(){const m=data.find(x=>x.id==sel.value);z.className=hor?'h':'';z.innerHTML=m?node(m):'<div class="empty">فیملی دیکھنے کے لیے اوپر سے کوئی رُوٹ (بنیادی ممبر) منتخب کریں۔</div>'}
-function zm(){z.style.transform=`scale(${s})`}
-sel.onchange=draw;
-zi.onclick=()=>{s+=.1;zm()};zo.onclick=()=>{s=Math.max(.3,s-.1);zm()};zr.onclick=()=>{s=1;zm()};
-hv.onclick=()=>{hor=!hor;hv.textContent=hor?'Vertical':'Horizontal';draw()};
-img.onclick=()=>{if(!sel.value)return alert('Pehle root member select karein');const o=z.style.transform;z.style.transform='none';
-html2canvas(z,{backgroundColor:'#fff',scale:2}).then(c=>{z.style.transform=o;const a=document.createElement('a');a.href=c.toDataURL();a.download='shajra.png';a.click()})};
+const z = document.getElementById('zoom');
+let s = 1, hor = false;
+let currentData = [];
+
+// Check server and load data
+async function initialize() {
+  try {
+    currentData = await getDataAsync();
+    updateRootSelect();
+    document.getElementById('serverInfo').innerHTML = '<span style="color:green">✅ Connected to server</span>';
+  } catch (error) {
+    console.error('Error loading data:', error);
+    document.getElementById('serverInfo').innerHTML = '<span style="color:orange">⚠️ Using local data</span>';
+    currentData = getData();
+    updateRootSelect();
+  }
+}
+
+function updateRootSelect() {
+  const sel = document.getElementById('root');
+  sel.innerHTML = '<option value="">-- Root member select karein --</option>' + 
+    currentData.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+}
+
+function node(m) {
+  const k = currentData.filter(x => x.father == m.id);
+  return `<div class="node"><div class="card ${m.gender == 'F' ? 'f' : ''}"><b>${m.name}</b><small>${m.gender == 'F' ? 'Female' : 'Male'}</small></div>${k.length ? `<div class="kids">${k.map(node).join('')}</div>` : ''}</div>`
+}
+
+function draw() {
+  const sel = document.getElementById('root');
+  const m = currentData.find(x => x.id == sel.value);
+  z.className = hor ? 'h' : '';
+  z.innerHTML = m ? node(m) : '<div class="empty">فیملی ڈیکھنے کے لئے اوپر سیکشن میں کوئ ممبر منخب کریں</div>'
+}
+
+function zm() {
+  z.style.transform = `scale(${s})`
+}
+
+sel.onchange = draw;
+zi.onclick = () => { s += .1; zm() };
+zo.onclick = () => { s = Math.max(.3, s - .1); zm() };
+zr.onclick = () => { s = 1; zm() };
+hv.onclick = () => { hor = !hor; hv.textContent = hor ? 'Vertical' : 'Horizontal'; draw() };
+
+img.onclick = () => {
+  if (!document.getElementById('root').value) return alert('Pehle root member select karein');
+  const o = z.style.transform;
+  z.style.transform = 'none';
+  html2canvas(z, { backgroundColor: '#fff', scale: 2 }).then(c => {
+    z.style.transform = o;
+    const a = document.createElement('a');
+    a.href = c.toDataURL();
+    a.download = 'shajra.png';
+    a.click()
+  });
+};
+
+// Initialize on page load
+initialize();
 </script></body></html>
