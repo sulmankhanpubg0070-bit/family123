@@ -1,8 +1,6 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
-<div id="hdr"></div><main><div id="adm"></div>
-<div class="box"><label>Site ka naam</label><input id="sn"><label>Tagline</label><input id="stg"><label>About page ka matan</label><textarea id="sab" rows="6"></textarea><button class="btn g" onclick="saveSet()">Save karein</button></div></main>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site settings</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main><div class="box"><h3>🌐 Site settings</h3><label>Site ka naam</label><input id="sn"><label>Tagline</label><input id="stg"><label>About page ka matan</label><textarea id="sab" rows="6"></textarea><button class="btn g" onclick="saveSet()">Save settings</button></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
-header('');let C;
-guard('admin-site.html').then(async g=>{if(!g)return;C=g.C;const t=await loadSettings();sn.value=t.siteName;stg.value=t.tagline;sab.value=t.about});
-async function saveSet(){const r=await apiJ('/api/settings',{...C,siteName:sn.value,tagline:stg.value,about:sab.value});if(r.s==200){loadSettings();alert('Save ho gaya')}else alert('Save nahi hua ('+r.s+')')}
+let C;adminInit('admin-site.html').then(async a=>{if(!a)return;C=a.C;const t=await loadSettings();sn.value=t.siteName;stg.value=t.tagline;sab.value=t.about});
+async function saveSet(){const r=await apiJ('/api/settings',{...C,siteName:sn.value,tagline:stg.value,about:sab.value});alert(r.s==200?'Settings save ho gayi':'Save nahi hui ('+r.s+')')}
 </script></body></html>

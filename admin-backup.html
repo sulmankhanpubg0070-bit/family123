@@ -1,15 +1,15 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Backup</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
-<div id="hdr"></div><main><div id="adm"></div>
-<div class="box"><button class="btn g" onclick="mk()">💾 Abhi backup banayein</button> <button class="btn" onclick="cur()">⬇ Mojooda data download</button></div>
-<div class="box"><h3>Server ke backups</h3><p><small>Har Sunday khud banta hai. Aakhri 8 rakhe jate hain.</small></p><table id="bt"></table></div>
-<div class="box"><h3>Data import (file se)</h3><input type="file" id="fi" accept=".json"></div></main>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Backup</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main>
+<div class="box"><h3>💾 Backup</h3><button class="btn g" onclick="mk()">Abhi backup banayein</button> <button class="btn" onclick="dn()">File download</button><p><small>Har Sunday khud backup banta hai. Aakhri 8 rakhe jate hain.</small></p><table id="bl"></table></div>
+<div class="box"><h3>🗑 Trash</h3><table id="trt"></table></div>
+<div class="box"><h3>⬆ Data import (JSON file)</h3><input type="file" id="fi" accept=".json"></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
-header('');let C;
-guard('admin-backup.html').then(g=>{if(!g)return;C=g.C;list()});
-async function list(){const r=await apiJ(API,{...C,op:'backups'});bt.innerHTML=(r.j||[]).map(b=>`<tr><td>${new Date(b.t).toLocaleString()}<br><small>${esc(b.label)} · ${b.n} members</small></td><td><button class="btn" onclick="dlb('${b._id}')">⬇</button> <button class="btn r" onclick="rb('${b._id}')">Wapas lagayein</button></td></tr>`).join('')||'<tr><td>Abhi koi backup nahi</td></tr>'}
-async function mk(){if((await op(C,{op:'mkbackup'})).s==200){alert('Backup ban gaya');list()}}
-async function cur(){dl('shajra-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(await load(),null,1),'application/json')}
-async function dlb(id){const r=await op(C,{op:'dlbackup',bid:id});if(r.s==200)dl('shajra-backup.json',JSON.stringify(r.j,null,1),'application/json')}
-async function rb(id){if(!confirm('Mojooda sara data is backup se badal jayega. (Pehle mojooda data ka bhi backup ban jata hai.) Jari rakhein?'))return;if((await op(C,{op:'rbackup',bid:id})).s==200){alert('Backup wapas lag gaya');list()}}
-fi.onchange=e=>{const r=new FileReader();r.onload=async()=>{try{const n=JSON.parse(r.result);if(!confirm('Mojooda sara data is file se badal jayega (purana backup ban jata hai). Jari rakhein?'))return;if((await op(C,{op:'import',members:n})).s==200){alert('Import ho gaya');list()}}catch(x){alert('File sahi nahi')}};r.readAsText(e.target.files[0])};
+let C;adminInit('admin-backup.html').then(a=>{if(a){C=a.C;lb();trash()}});
+async function lb(){const r=await apiJ('/api/backups',{...C,op:'list'});bl.innerHTML=(r.j||[]).map(b=>`<tr><td>${new Date(b.t).toLocaleString()}<br><small>${esc(b.label)} · ${b.n} members</small></td><td><button class="btn r" onclick="rb(${b.t})">Wapas lagayein</button></td></tr>`).join('')||'<tr><td>Abhi koi backup nahi</td></tr>'}
+async function mk(){const r=await apiJ('/api/backups',{...C,op:'create'});if(r.s==200)lb();else alert('Backup nahi bana ('+r.s+')')}
+async function rb(t){if(!confirm('Mojooda data is backup se badal jayega (pehle ka backup khud ban jata hai). Jari rakhein?'))return;const r=await apiJ('/api/backups',{...C,op:'restore',t});alert(r.s==200?'Backup wapas lag gaya':(r.j&&r.j.error)||'Nahi hua ('+r.s+')');lb()}
+async function dn(){dl('shajra-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(await load(),null,1),'application/json')}
+async function trash(){const r=await apiJ(API,{...C,op:'trash'});trt.innerHTML=(r.j||[]).map(m=>`<tr><td>${esc(m.name)}</td><td><button class="btn g" onclick="rest(${m.id})">Wapas</button></td></tr>`).join('')||'<tr><td>Trash khali hai</td></tr>'}
+async function rest(id){if((await op(C,{op:'restore',id})).s==200)trash()}
+fi.onchange=e=>{const r=new FileReader();r.onload=async()=>{try{const n=JSON.parse(r.result);if(!confirm('Mojooda sara data is file se badal jayega (purana backup ban jata hai). Jari rakhein?'))return;if((await op(C,{op:'import',members:n})).s==200){alert('Import ho gaya');lb()}}catch(x){alert('File sahi nahi')}};r.readAsText(e.target.files[0])};
 </script></body></html>

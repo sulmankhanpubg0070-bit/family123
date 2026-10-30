@@ -1,6 +1,6 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Log</title><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
-<div id="hdr"></div><main><div id="adm"></div><div class="box"><h3>Aakhri 40 badlaav</h3><table id="at"></table></div></main>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Activity log</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main><div class="box"><h3>📜 Kis ne kya badla (aakhri 40)</h3><table id="at"></table></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
-header('');
-guard('admin-log.html').then(async g=>{if(!g)return;const r=await apiJ(API,{...g.C,op:'audit'});at.innerHTML=(r.j||[]).map(a=>`<tr><td><small>${new Date(a.t).toLocaleString()}</small><br>👤 ${esc(a.who)}: ${esc(a.action)} ${esc(a.detail)}</td></tr>`).join('')||'<tr><td>Abhi kuch nahi</td></tr>'});
+adminInit('admin-log.html',true).then(async a=>{if(!a)return;const r=await apiJ(API,{...a.C,op:'audit'});
+ at.innerHTML=(r.j||[]).map(x=>`<tr><td>${new Date(x.t).toLocaleString()}</td><td><b>${esc(x.who)}</b>: ${esc(x.action)} ${esc(x.detail)}</td></tr>`).join('')||'<tr><td>Abhi kuch nahi</td></tr>'});
 </script></body></html>
