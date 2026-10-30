@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="ur"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Family Shajra</title>
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#2c3e50">
-<link rel="stylesheet" href="style.css"><link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet"></head><body>
+<link rel="stylesheet" href="style.css"><link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<style>.tg{cursor:pointer;background:var(--green);color:#fff;border-radius:50%;width:24px;height:24px;line-height:22px;text-align:center;margin-top:4px;font-size:16px;user-select:none}.h .tg{margin:0 0 0 4px}#wrap{touch-action:pan-x pan-y}</style></head><body>
 <div id="hdr"></div><main>
 <select id="root"></select><input id="sr" placeholder="🔍 Naam se search karein">
 <div class="bar"><button class="btn w" id="zo">−</button><button class="btn w" id="zr">⟳</button><button class="btn w" id="zi">+</button>
@@ -12,24 +13,28 @@
 <script src="common.js"></script><script>
 header('home');
 const $=i=>document.getElementById(i),z=$('zoom'),sel=$('root'),EM='<div class="empty">فیملی دیکھنے کے لیے اوپر سے کوئی رُوٹ (بنیادی ممبر) منتخب کریں۔</div>';
-let data=[],s=1,hor=false,hit=null;
+let data=[],s=1,hor=false,hit=null,closed=new Set(),pd=0;
 load().then(d=>{data=d;sel.innerHTML='<option value="">-- Root member select karein --</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');draw()});
-function node(m){const k=data.filter(x=>x.father==m.id);
- return `<div class="node"><div class="card ${m.gender=='F'?'f':''} ${m.dead?'d':''} ${hit==m.id?'hit':''}" data-id="${m.id}">${m.photo?`<img src="${m.photo}">`:''}<b>${esc(m.name)}${m.dead?' †':''}</b><small>${m.gender=='F'?'Female':'Male'}</small>${m.spouse?`<div class="sp">♥ ${esc(m.spouse)}</div>`:''}</div>${k.length?`<div class="kids">${k.map(node).join('')}</div>`:''}</div>`}
+function node(m){const k=data.filter(x=>x.father==m.id),cl=closed.has(m.id);
+ return `<div class="node"><div class="card ${m.gender=='F'?'f':''} ${m.dead?'d':''} ${hit==m.id?'hit':''}" data-id="${m.id}">${m.photo?`<img src="${m.photo}">`:''}<b>${esc(m.name)}${m.dead?' †':''}</b><small>${m.gender=='F'?'Female':'Male'}</small>${m.spouse?`<div class="sp">♥ ${esc(m.spouse)}</div>`:''}</div>${k.length?`<div class="tg" data-t="${m.id}">${cl?'+'+k.length:'−'}</div>`:''}${k.length&&!cl?`<div class="kids">${k.map(node).join('')}</div>`:''}</div>`}
 function draw(){const m=data.find(x=>x.id==sel.value);z.className=hor?'h':'';z.innerHTML=m?node(m):EM;
- z.querySelectorAll('.card').forEach(c=>c.onclick=()=>info(+c.dataset.id))}
-function info(id){const m=data.find(x=>x.id==id),f=data.find(x=>x.id==m.father),n=data.filter(x=>x.father==id).length;
+ z.querySelectorAll('.card').forEach(c=>c.onclick=()=>info(+c.dataset.id));
+ z.querySelectorAll('.tg').forEach(t=>t.onclick=()=>{const i=+t.dataset.t;closed.has(i)?closed.delete(i):closed.add(i);draw()})}
+function info(id){const m=data.find(x=>x.id==id),f=data.find(x=>x.id==m.father),mo=data.find(x=>x.id==m.mother),k=data.filter(x=>x.father==id||x.mother==id);
  $('mc').innerHTML=`${m.photo?`<img src="${m.photo}">`:''}<h2>${esc(m.name)}${m.dead?' (marhoom)':''}</h2>
- <p>${m.gender=='F'?'Female':'Male'}${f?' · Walid: '+esc(f.name):''}</p>${m.dob?`<p>Paidaish: ${esc(m.dob)} ${m.dead?'':'('+age(m)+')'}</p>`:''}
- ${m.spouse?`<p>♥ ${esc(m.spouse)}</p>`:''}<p>Bachay: ${n}</p>${m.phone?`<a class="btn g" href="tel:${esc(m.phone)}">📞 ${esc(m.phone)}</a>`:''}
+ <p>${m.gender=='F'?'Female':'Male'}</p>${f?`<p>Walid: ${esc(f.name)}</p>`:''}${mo?`<p>Walida: ${esc(mo.name)}</p>`:''}${m.dob?`<p>Paidaish: ${esc(m.dob)} ${m.dead?'':'('+age(m)+')'}</p>`:''}
+ ${m.spouse?`<p>♥ ${esc(m.spouse)}</p>`:''}<p>Bachay: ${k.length?k.map(x=>esc(x.name)).join(', '):'0'}</p>${m.phone?`<a class="btn g" href="tel:${esc(m.phone)}">📞 ${esc(m.phone)}</a>`:''}
  <p><button class="btn w" id="mx">Band karein</button></p>`;$('modal').style.display='flex';$('mx').onclick=()=>$('modal').style.display='none'}
 $('modal').onclick=e=>{if(e.target.id=='modal')$('modal').style.display='none'};
 sel.onchange=()=>{hit=null;draw()};
 $('sr').oninput=e=>{const q=e.target.value.trim().toLowerCase();if(!q)return;const m=data.find(x=>x.name.toLowerCase().includes(q));if(!m)return;
- let r=m;while(r.father){const p=data.find(x=>x.id==r.father);if(!p)break;r=p}sel.value=r.id;hit=m.id;draw();
+ let r=m;while(r.father){const p=data.find(x=>x.id==r.father);if(!p)break;r=p}sel.value=r.id;hit=m.id;
+ let p=data.find(x=>x.id==m.father);while(p){closed.delete(p.id);p=data.find(x=>x.id==p.father)}draw();
  const c=z.querySelector('.hit');if(c)c.scrollIntoView({block:'center',inline:'center'})};
 const zm=()=>z.style.transform=`scale(${s})`;
 $('zi').onclick=()=>{s+=.1;zm()};$('zo').onclick=()=>{s=Math.max(.3,s-.1);zm()};$('zr').onclick=()=>{s=1;zm()};
+$('wrap').addEventListener('touchmove',e=>{if(e.touches.length==2){e.preventDefault();const t=e.touches,dd=Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);if(pd){s=Math.min(2.5,Math.max(.3,s*dd/pd));zm()}pd=dd}},{passive:false});
+$('wrap').addEventListener('touchend',()=>pd=0);
 $('hv').onclick=()=>{hor=!hor;$('hv').textContent=hor?'Vertical':'Horizontal';draw()};
 $('pdf').onclick=()=>window.print();
 $('img').onclick=()=>{if(!sel.value)return alert('Pehle root member select karein');const o=z.style.transform;z.style.transform='none';

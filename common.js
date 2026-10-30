@@ -5,7 +5,7 @@ const SAMPLE=[
 {id:2,name:'Ahmad',father:1,gender:'M',dob:'1965-06-01',phone:'0300-1234567',spouse:'Zainab'},
 {id:3,name:'Bilal',father:1,gender:'M',dob:'1970-01-15'},
 {id:4,name:'Aisha',father:1,gender:'F',dob:'1975-09-20'},
-{id:5,name:'Usman',father:2,gender:'M',dob:'1990-04-04'},
+{id:5,name:'Usman',father:2,mother:null,gender:'M',dob:'1990-04-04'},
 {id:6,name:'Fatima',father:2,gender:'F',dob:'1994-12-12'},
 {id:7,name:'Hamza',father:3,gender:'M',dob:'1998-08-08'}];
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -18,12 +18,9 @@ async function load(){
 async function loadSettings(){
  try{const r=await fetch('/api/settings');if(!r.ok)throw 0;const s=await r.json();lsSet(SKEY,JSON.stringify(s));return s}catch(e){}
  try{return {...DEFSET,...JSON.parse(lsGet(SKEY))}}catch(e){}return {...DEFSET}}
-async function apiJ(url,body,method='POST'){try{const r=await fetch(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let j=null;try{j=await r.json()}catch(e){}return {s:r.status,j}}catch(e){return {s:0,j:null}}}
-async function api(method,body){return (await apiJ(API,body,method)).s}
-// cred = {user, password}
-async function save(d,cred){const m=d.map(({_id,...r})=>r);const s=await api('POST',{members:m,...cred});
- if(s==201||s==200){lsSet(KEY,JSON.stringify(m));return true}
- alert(s==401?'Login ghalat ya ijazat nahi':'Server par save nahi hua (MongoDB check karein)');return false}
+async function apiJ(url,body){try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});let j=null;try{j=await r.json()}catch(e){}return {s:r.status,j}}catch(e){return {s:0,j:null}}}
+// Admin operation: cred = {user,password}
+async function op(cred,o){const r=await apiJ(API,{...cred,...o});if(r.s!=200)alert(r.s==429?r.j.error:r.s==401?'Login ghalat ya ijazat nahi':(r.j&&r.j.error)||'Server par kaam nahi hua ('+r.s+')');return r}
 function age(m){if(!m.dob)return '';const y=Math.floor((Date.now()-new Date(m.dob))/31557600000);return y>=0?y+' saal':''}
 function dl(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click()}
 function header(on){
