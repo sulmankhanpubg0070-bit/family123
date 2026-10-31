@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="ur"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Family Shajra</title>
 <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#2c3e50">
 <link rel="stylesheet" href="style.css"><link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
-<style>.tg{cursor:pointer;background:var(--green);color:#fff;border-radius:50%;width:24px;height:24px;line-height:22px;text-align:center;margin-top:4px;font-size:16px;user-select:none}.h .tg{margin:0 0 0 4px}#wrap{touch-action:pan-x pan-y}</style></head><body>
+<style>.tg{cursor:pointer;background:var(--green);color:#fff;border-radius:50%;width:24px;height:24px;line-height:22px;text-align:center;margin-top:4px;font-size:16px;user-select:none}.h .tg{margin:0 0 0 4px}#wrap{touch-action:pan-x pan-y}.sb{display:flex;gap:8px;margin-bottom:10px}.sb input{flex:1;margin:0;min-width:0}.sb .btn{flex:none}</style></head><body>
 <div id="hdr"></div><main>
 <div class="chips" id="bd"></div>
-<select id="root"></select><input id="sr" placeholder="🔍 Naam se search karein">
+<select id="root"></select>
+<div class="sb"><input id="sr" placeholder="🔍 Naam se search karein" enterkeyhint="search"><button class="btn" id="sg">Go</button></div>
 <div class="bar"><button class="btn w" id="zo">−</button><button class="btn w" id="zr">⟳</button><button class="btn w" id="zi">+</button>
 <button class="btn g" id="img">⬇ Image</button><button class="btn r" id="pdf">PDF</button><button class="btn" id="hv">Horizontal</button><button class="btn w" id="rl">🔗 Rishta</button></div>
 <h2 class="t">🌳 فیملی کا شجرہ</h2>
@@ -52,7 +53,11 @@ $('rl').onclick=()=>{const o=data.map(m=>`<option value="${m.id}">${esc(m.name)}
  $('ra').onchange=$('rb').onchange=go;go();$('modal').style.display='flex';$('mx').onclick=()=>$('modal').style.display='none'};
 $('modal').onclick=e=>{if(e.target.id=='modal')$('modal').style.display='none'};
 sel.onchange=()=>{hit=null;draw()};
-$('sr').oninput=e=>{const q=e.target.value.trim().toLowerCase();if(!q)return;const m=data.find(x=>x.name.toLowerCase().includes(q));if(m)focusOn(m)};
+// Search: likhte waqt bhi chalta hai; Go button / Enter par naam na mile to batata hai
+function find(loud){const q=$('sr').value.trim().toLowerCase();if(!q)return;const m=data.find(x=>x.name.toLowerCase().includes(q));if(m){focusOn(m);if(loud)$('sr').blur()}else if(loud)alert('Is naam ka koi member nahi mila')}
+$('sr').oninput=()=>find(false);
+$('sr').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();find(true)}};
+$('sg').onclick=()=>find(true);
 addEventListener('hashchange',fromHash);
 const zm=()=>z.style.transform=`scale(${s})`;
 $('zi').onclick=()=>{s+=.1;zm()};$('zo').onclick=()=>{s=Math.max(.3,s-.1);zm()};$('zr').onclick=()=>{s=1;zm()};
