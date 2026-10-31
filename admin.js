@@ -12,7 +12,7 @@ function why(r){if(!r)return '';
  if(r.s==401)return 'Username/password ghalat hai, ya is deployment mein ADMIN_PASSWORD set nahi (Preview environment check karein)';
  if(r.s==404)return '/api/members nahi mila (api folder deploy nahi hua)';
  return 'Server error '+r.s+': '+((r.j&&(r.j.details||r.j.error))||'')}
-const PAGES=[['admin.html','🏠','Dashboard'],['admin-members.html','👥','Members'],['admin-site.html','🌐','Site'],['admin-accounts.html','🔑','Passwords','m'],['admin-backup.html','💾','Backup'],['admin-log.html','📜','Log','m']];
+const PAGES=[['admin.html','🏠','Dashboard'],['admin-members.html','👥','Members'],['admin-bulk.html','📥','Bulk add'],['admin-site.html','🌐','Site'],['admin-accounts.html','🔑','Passwords','m'],['admin-backup.html','💾','Backup'],['admin-log.html','📜','Log','m']];
 function shell(on,name,role){
  if(lsGet('shajra_dark')=='1')document.body.classList.add('dark');
  const rl={master:'Master',admin:'Admin',editor:'Editor'}[role]||'Admin';
