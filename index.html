@@ -17,7 +17,9 @@ header('home');
 const $=i=>document.getElementById(i),z=$('zoom'),sel=$('root'),EM='<div class="empty">فیملی دیکھنے کے لیے اوپر سے کوئی رُوٹ (بنیادی ممبر) منتخب کریں۔</div>';
 let data=[],s=1,hor=false,hit=null,closed=new Set(),pd=0;
 const byId=i=>data.find(x=>x.id==i),photoOf=m=>m.hasPhoto?`/api/photo?id=${m.id}&v=${m.pv||0}`:(m.photo||'');
-load().then(d=>{data=d;sel.innerHTML='<option value="">-- Root member select karein --</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');birthdays();draw();fromHash()});
+// Default tree: admin ne jo root chuna ho wo, warna pehla root (jis ka walid na ho)
+Promise.all([load(),loadSettings()]).then(([d,t])=>{data=d;sel.innerHTML='<option value="">-- Root member select karein --</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
+ const r=t.defaultRoot&&byId(t.defaultRoot)?t.defaultRoot:(d.find(x=>!x.father)||{}).id;if(r)sel.value=r;birthdays();draw();fromHash()});
 // Note: 'top' naam browser ka reserved hai, is liye rootOf
 function rootOf(m){let r=m;while(r.father){const p=byId(r.father);if(!p)break;r=p}return r}
 function focusOn(m){sel.value=rootOf(m).id;hit=m.id;let p=byId(m.father);while(p){closed.delete(p.id);p=byId(p.father)}draw();const c=z.querySelector('.hit');if(c)c.scrollIntoView({block:'center',inline:'center'})}

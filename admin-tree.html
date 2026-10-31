@@ -1,0 +1,41 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tree editor</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css">
+<style>.ac{display:flex;gap:4px;justify-content:center;margin-top:6px}.mini{border:0;border-radius:8px;padding:5px 10px;font-size:15px;color:#fff;background:var(--blue);cursor:pointer}.mini.g{background:var(--green)}.mini.r{background:var(--red)}.sb{display:flex;gap:8px;margin-bottom:10px}.sb select{flex:1;margin:0;min-width:0}.sb .btn{flex:none}#modal .box{text-align:left}</style></head><body>
+<div id="hdr"></div><main>
+<div class="note">Kisi bhi member ke neeche <b>＋</b> dabayein, naya bacha seedha wahin add ho jayega. ✎ se edit, 🗑 se delete. Male ka dabba neela, female ka gulabi (Home page jaisa).</div>
+<div class="sb"><select id="root"></select><button class="btn g" onclick="openForm(null,null)">➕ Naya root</button></div>
+<div id="st">Load ho raha hai…</div>
+<div id="wrap"><div id="zoom"></div></div></main>
+<div id="modal"><div class="box"><h3 id="ft"></h3><input id="fn" placeholder="Naam"><select id="ff"></select><select id="fm"></select>
+<select id="fg"><option value="M">Male (neela)</option><option value="F">Female (gulabi)</option></select><input id="fb" type="date"><input id="fp" placeholder="Phone (sirf admin ko nazar aata hai)"><input id="fs" placeholder="Biwi / Shauhar ka naam">
+<label class="row"><input type="checkbox" id="fd"> Marhoom</label><input type="file" id="fpic" accept="image/*"><small id="fpn"></small>
+<p><button class="btn g" onclick="saveM()">Save</button> <button class="btn w" onclick="closeF()">Band</button></p></div></div>
+<script src="common.js"></script><script src="admin.js"></script><script>
+const $=i=>document.getElementById(i);let d=[],C,CAN=true,eid=null,photo='',want=null;
+const by=i=>d.find(x=>x.id==i),kids=i=>d.filter(x=>x.father==i);
+adminInit('admin-tree.html').then(a=>{if(a){C=a.C;CAN=a.role!='editor';reload()}});
+async function reload(){const r=await apiJ(API,{...C,op:'list'});
+ if(r.s!=200||!Array.isArray(r.j)){$('st').innerHTML='⚠ '+esc(why(r))+' <button class="btn" onclick="reload()">Dobara</button>';return}
+ $('st').textContent='';d=r.j;const v=want||$('root').value;want=null;
+ $('root').innerHTML='<option value="">-- Root member select karein --</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}${m.father?'':' ★'}</option>`).join('');
+ $('root').value=by(v)?v:((d.find(x=>!x.father)||{}).id||'');draw()}
+const img=m=>m.hasPhoto?`/api/photo?id=${m.id}&v=${m.pv||0}`:'';
+function node(m){const k=kids(m.id),i=img(m);
+ return `<div class="node"><div class="card ${m.gender=='F'?'f':''} ${m.dead?'d':''}">${i?`<img src="${i}" loading="lazy">`:''}<b>${esc(m.name)}${m.dead?' †':''}</b><small>${m.gender=='F'?'Female':'Male'}</small>${m.spouse?`<div class="sp">♥ ${esc(m.spouse)}</div>`:''}<div class="ac" data-id="${m.id}"><button class="mini g" data-a="add">＋</button><button class="mini" data-a="ed">✎</button>${CAN?'<button class="mini r" data-a="del">🗑</button>':''}</div></div>${k.length?`<div class="kids">${k.map(node).join('')}</div>`:''}</div>`}
+function draw(){const m=by($('root').value);$('zoom').innerHTML=m?node(m):'<div class="empty" style="direction:ltr">Root select karein, ya "Naya root" se shuru karein.</div>'}
+$('root').onchange=draw;
+$('zoom').onclick=e=>{const b=e.target.closest('button[data-a]');if(!b)return;const id=+b.parentNode.dataset.id,a=b.dataset.a;if(a=='add')openForm(null,id);else if(a=='ed')openForm(id);else del(id)};
+function isDesc(id,x){let n=0;while(x!=null&&n++<60){if(x==id)return true;const p=by(x);x=p?p.father:null}return false}
+function openForm(id,father){eid=id;photo='';const m=id?by(id):{};
+ const o=t=>`<option value="">${t}</option>`+d.filter(x=>x.id!=id).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+ $('ff').innerHTML=o('Walid (father) select karein');$('fm').innerHTML=o('Walida (mother) select karein');
+ $('ft').textContent=id?'✏️ Edit: '+m.name:(father?'➕ '+by(father).name+' ka naya bacha':'➕ Naya root member');
+ $('fn').value=m.name||'';$('ff').value=id?(m.father||''):(father||'');$('fm').value=m.mother||'';$('fg').value=m.gender||'M';$('fb').value=m.dob||'';$('fp').value=m.phone||'';$('fs').value=m.spouse||'';$('fd').checked=!!m.dead;$('fpic').value='';
+ $('fpn').textContent=m.hasPhoto?'Tasveer lagi hai (nayi chunein to badal jayegi)':'';$('modal').style.display='flex';$('fn').focus()}
+function closeF(){$('modal').style.display='none'}
+$('fpic').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
+async function saveM(){const nm=$('fn').value.trim();if(!nm)return alert('Naam likhein');
+ const m={id:eid||Date.now(),name:nm,father:$('ff').value?+$('ff').value:null,mother:$('fm').value?+$('fm').value:null,gender:$('fg').value,dob:$('fb').value,phone:$('fp').value,spouse:$('fs').value,dead:$('fd').checked,...(photo?{photo}:{})};
+ if(m.father==m.id||m.mother==m.id||(eid&&isDesc(m.id,m.father)))return alert('Walid/walida galat hai (apna hi bacha nahi ho sakta)');
+ if((await op(C,{op:'upsert',member:m})).s==200){closeF();if(!m.father&&!eid)want=String(m.id);reload()}}
+async function del(id){const m=by(id);if(!confirm(m.name+' ko delete karein? (Backup page ke Trash se wapas aa sakta hai)'))return;if((await op(C,{op:'remove',id})).s==200)reload()}
+</script></body></html>
