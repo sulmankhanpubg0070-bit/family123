@@ -37,4 +37,6 @@ function header(on){
   if(navigator.share)navigator.share({title:document.title,text:t}).catch(()=>{});else window.open('https://wa.me/?text='+encodeURIComponent(t))};
  $('bk').onclick=async e=>{e.preventDefault();dl('shajra-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(await load(),null,1),'application/json')};
  try{if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js')}catch(e){}
+ // Initialize Vercel Web Analytics
+ try{window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)}}catch(e){}
 }
