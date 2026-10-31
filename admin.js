@@ -2,7 +2,8 @@ const AK='shajra_admin',SOFT=3*3600e3; // login 3 ghante
 function gc(){for(const s of [sessionStorage,localStorage]){try{const v=s.getItem(AK);if(v)return JSON.parse(v)}catch(e){}}return null}
 function clr(){try{sessionStorage.removeItem(AK);localStorage.removeItem(AK)}catch(e){}}
 function sc(c,rem){clr();try{(rem?localStorage:sessionStorage).setItem(AK,JSON.stringify({...c,exp:Date.now()+SOFT}))}catch(e){}}
-function logout(){clr();location.href='admin.html'}
+// Logout ke baad seedha site ka Home page
+function logout(){clr();location.href='index.html'}
 function why(r){if(!r)return '';
  if(r.s==0)return 'Server tak rabta nahi hua (internet ya deploy check karein)';
  if(r.s==429)return (r.j&&r.j.error)||'Bohat ghalat koshishen, 2 minute baad try karein';
