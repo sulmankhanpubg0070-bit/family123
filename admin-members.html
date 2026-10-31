@@ -1,24 +1,31 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Members</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Members</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css">
+<style>.mr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eee;flex-wrap:wrap}.mn{flex:1 1 140px;min-width:0;word-break:break-word}.mn img{width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:6px}.mb{display:flex;gap:6px}.sb{display:flex;gap:8px;margin-bottom:10px}.sb input{flex:1;margin:0;min-width:0}.sb .btn{flex:none}</style></head><body>
 <div id="hdr"></div><main>
+<p><a class="btn w" href="#lh">⬇ Members ki list</a></p>
 <div class="box"><h3 id="ft">➕ Naya member</h3><input id="nm" placeholder="Naam"><select id="fa"></select><select id="mo"></select>
 <select id="ge"><option value="M">Male</option><option value="F">Female</option></select>
-<input id="dob" type="date"><input id="ph" placeholder="Phone"><input id="sp" placeholder="Biwi / Shauhar ka naam">
-<label class="row"><input type="checkbox" id="dd"> Marhoom</label><input type="file" id="pic" accept="image/*">
-<button class="btn g" onclick="add()" id="sv">Add member</button> <button class="btn w" onclick="reset()">Clear</button></div>
-<div class="box"><h3>👥 Members</h3><input id="q" placeholder="🔍 Search" oninput="draw()"><table id="tb"></table></div></main>
+<input id="dob" type="date"><input id="ph" placeholder="Phone (sirf admin ko nazar aata hai)"><input id="sp" placeholder="Biwi / Shauhar ka naam">
+<label class="row"><input type="checkbox" id="dd"> Marhoom</label><input type="file" id="pic" accept="image/*"><small id="pn"></small>
+<p><button class="btn g" onclick="add()" id="sv">Add member</button> <button class="btn w" onclick="reset()">Clear</button></p></div>
+<div class="box"><h3 id="lh">👥 Members</h3>
+<div class="sb"><input id="q" placeholder="🔍 Naam se search" enterkeyhint="search" oninput="draw()" onkeydown="if(event.key=='Enter'){event.preventDefault();draw()}"><button class="btn" onclick="draw()">Go</button></div>
+<p id="cnt" style="margin:0 0 6px"><b></b></p><div id="st">Load ho raha hai…</div><div id="lst"></div></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
-const $=i=>document.getElementById(i);let d=[],eid=null,photo='',C;
-adminInit('admin-members.html').then(a=>{if(a){C=a.C;reload()}});
-const reload=async()=>{d=await load();draw()};
+const $=i=>document.getElementById(i);let d=[],eid=null,photo='',C,CAN=true;
+adminInit('admin-members.html').then(a=>{if(a){C=a.C;CAN=a.role!='editor';reload()}});
+async function reload(){$('st').textContent='Load ho raha hai…';const r=await apiJ(API,{...C,op:'list'});
+ if(r.s!=200||!Array.isArray(r.j)){$('st').innerHTML='⚠ List load nahi hui: '+esc(why(r))+' <button class="btn" onclick="reload()">Dobara</button>';return}
+ $('st').textContent='';d=r.j;draw()}
 function draw(){const o=t=>`<option value="">${t}</option>`+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');
- const f=fa.value,m2=mo.value;fa.innerHTML=o('Walid (father) select karein');mo.innerHTML=o('Walida (mother) select karein');fa.value=f;mo.value=m2;
- const s=q.value.trim().toLowerCase();
- tb.innerHTML=d.filter(m=>m.name.toLowerCase().includes(s)).map(m=>`<tr><td>${esc(m.name)}${m.dead?' †':''}</td><td><button class="btn" onclick="ed(${m.id})">Edit</button> <button class="btn r" onclick="del(${m.id})">Del</button></td></tr>`).join('')}
-function reset(){eid=null;photo='';['nm','dob','ph','sp'].forEach(i=>$(i).value='');dd.checked=false;pic.value='';fa.value='';mo.value='';ft.textContent='➕ Naya member';sv.textContent='Add member'}
-function ed(id){const m=d.find(x=>x.id==id);eid=id;nm.value=m.name;fa.value=m.father||'';mo.value=m.mother||'';ge.value=m.gender||'M';dob.value=m.dob||'';ph.value=m.phone||'';sp.value=m.spouse||'';dd.checked=!!m.dead;photo=m.photo||'';ft.textContent='✏️ Edit: '+m.name;sv.textContent='Save changes';scrollTo(0,0)}
-pic.onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
-async function add(){if(!nm.value.trim())return alert('Naam likhein');
- const m={id:eid||Date.now(),name:nm.value.trim(),father:fa.value?+fa.value:null,mother:mo.value?+mo.value:null,gender:ge.value,dob:dob.value,phone:ph.value,spouse:sp.value,dead:dd.checked,photo};
+ const f=$('fa').value,m2=$('mo').value;$('fa').innerHTML=o('Walid (father) select karein');$('mo').innerHTML=o('Walida (mother) select karein');$('fa').value=f;$('mo').value=m2;
+ const s=$('q').value.trim().toLowerCase(),L=d.filter(m=>m.name.toLowerCase().includes(s));
+ $('cnt').innerHTML=`<b>${L.length}${s?' / '+d.length:''}</b> members`;
+ $('lst').innerHTML=L.map(m=>`<div class="mr"><div class="mn">${m.hasPhoto?`<img src="/api/photo?id=${m.id}&v=${m.pv||0}">`:''}${esc(m.name)}${m.dead?' †':''}</div><div class="mb"><button class="btn" onclick="ed(${m.id})">Edit</button>${CAN?`<button class="btn r" onclick="del(${m.id})">Del</button>`:''}</div></div>`).join('')||'<p>Koi member nahi mila</p>'}
+function reset(){eid=null;photo='';$('pn').textContent='';['nm','dob','ph','sp'].forEach(i=>$(i).value='');$('dd').checked=false;$('pic').value='';$('fa').value='';$('mo').value='';$('ft').textContent='➕ Naya member';$('sv').textContent='Add member'}
+function ed(id){const m=d.find(x=>x.id==id);eid=id;photo='';$('nm').value=m.name;$('fa').value=m.father||'';$('mo').value=m.mother||'';$('ge').value=m.gender||'M';$('dob').value=m.dob||'';$('ph').value=m.phone||'';$('sp').value=m.spouse||'';$('dd').checked=!!m.dead;$('pn').textContent=m.hasPhoto?'Tasveer lagi hai (nayi chunein to badal jayegi)':'';$('ft').textContent='✏️ Edit: '+m.name;$('sv').textContent='Save changes';scrollTo(0,0)}
+$('pic').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=120;const x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,120,120);photo=c.toDataURL('image/jpeg',.7)};im.src=URL.createObjectURL(f)};
+async function add(){if(!$('nm').value.trim())return alert('Naam likhein');
+ const m={id:eid||Date.now(),name:$('nm').value.trim(),father:$('fa').value?+$('fa').value:null,mother:$('mo').value?+$('mo').value:null,gender:$('ge').value,dob:$('dob').value,phone:$('ph').value,spouse:$('sp').value,dead:$('dd').checked,...(photo?{photo}:{})};
  if(m.father==m.id||m.mother==m.id)return alert('Apna walid/walida khud nahi ho sakta');
  if((await op(C,{op:'upsert',member:m})).s==200){reset();reload()}}
 async function del(id){if(!confirm('Delete karein? (Backup page ke Trash se wapas aa sakta hai)'))return;if((await op(C,{op:'remove',id})).s==200)reload()}

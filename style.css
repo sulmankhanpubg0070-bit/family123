@@ -33,9 +33,10 @@ h2.t{text-align:center;font-family:'Noto Nastaliq Urdu',serif;border-bottom:3px 
 .stat b{font-size:34px;display:block;color:var(--dark)}
 table{width:100%;border-collapse:collapse}td{padding:10px;border-bottom:1px solid #eee}
 #modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
-#modal .box{width:100%;max-width:360px;text-align:center;margin:0}#modal img{width:96px;height:96px;border-radius:50%;object-fit:cover}
+#modal .box{width:100%;max-width:360px;text-align:center;margin:0;max-height:90vh;overflow:auto}#modal img{width:96px;height:96px;border-radius:50%;object-fit:cover}
 .row{display:flex;gap:8px;align-items:center;margin-bottom:10px}.row input[type=checkbox]{width:auto;margin:0}
 .bar2{background:#ddd;border-radius:8px;height:22px;margin:6px 0;overflow:hidden}.bar2 i{display:block;height:100%;background:var(--green);color:#fff;font-size:13px;padding-left:8px;font-style:normal;line-height:22px}
-.dark{--bg:#14181d;color:#e8e8e8}.dark .box,.dark .stat div,.dark select,.dark input,.dark .card,.dark #menuBox{background:#222a33;color:#eee;border-color:#44505e}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 0 12px}.chips:empty{display:none}.chip2{flex:none;background:#fff;border:1px solid #ddd;border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
+.dark{--bg:#14181d;color:#e8e8e8}.dark .box,.dark .stat div,.dark select,.dark input,.dark .card,.dark #menuBox,.dark .chip2{background:#222a33;color:#eee;border-color:#44505e}
 .dark #menuBox a{color:#eee}.dark #wrap{background-color:#1b2128;border-color:#333}.dark .card small{color:#aaa}
-@media print{#hdr,.bar,#sr,#root,#modal{display:none!important}body{background:#fff}#wrap{border:0;overflow:visible}}
+@media print{#hdr,.bar,#sr,#root,#modal,.chips{display:none!important}body{background:#fff}#wrap{border:0;overflow:visible}}

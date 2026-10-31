@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bulk add</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="admin.css"></head><body>
+<div id="hdr"></div><main>
+<div class="note">Har line mein ek naam. Bachon ke aage <b>-</b> lagayein (ek <b>-</b> = ek peedi neeche). Naam ke baad <b>[F]</b> = female, <b>[late]</b> = marhoom. Mojooda members hamesha rehte hain, ye sirf naye add karta hai.</div>
+<div class="box"><h3>📥 Ek saath members add</h3>
+<label>Pehli peedi kis ke neeche add ho?</label><select id="pa"></select>
+<textarea id="tx" rows="14" placeholder="Dada Ji [late]
+- Ahmad
+-- Usman
+-- Fatima [F]
+- Bilal
+-- Hamza
+- Aisha [F]"></textarea>
+<button class="btn" onclick="prev()">Pehle dekhein</button> <button class="btn g" id="go" onclick="addAll()" disabled>Add karein</button>
+<div id="pv" style="margin-top:12px"></div></div></main>
+<script src="common.js"></script><script src="admin.js"></script><script>
+const $=i=>document.getElementById(i);let C,d=[],rows=[];
+adminInit('admin-bulk.html').then(async a=>{if(!a)return;C=a.C;d=(await apiJ(API,{...C,op:'list'})).j||[];
+ $('pa').innerHTML='<option value="">(Naye root / koi walid nahi)</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('')});
+function parse(){const out=[],st=[],err=[];
+ $('tx').value.split('\n').forEach((ln,i)=>{const t=ln.trim();if(!t)return;
+  const dep=(t.match(/^-+/)||[''])[0].length;let nm=t.replace(/^-+\s*/,'');
+  const F=/\[f\]/i.test(nm),late=/\[late\]/i.test(nm);nm=nm.replace(/\[(f|late)\]/ig,'').trim();
+  if(!nm)return;
+  let father=null;if(dep==0)father=$('pa').value?+$('pa').value:null;else if(st[dep-1]!=null)father=st[dep-1];else{err.push('Line '+(i+1)+': "'+nm+'" ka walid upar nahi mila');return}
+  const id=Date.now()+out.length;st.length=dep;st[dep]=id;
+  out.push({id,name:nm,father,gender:F?'F':'M',dead:late,dep})});
+ return {out,err}}
+function prev(){const p=parse();rows=p.out;const have=new Set(d.map(m=>m.name.trim().toLowerCase()));
+ $('pv').innerHTML=(p.err.length?`<div class="note">${p.err.map(esc).join('<br>')}</div>`:'')+`<p><b>${rows.length}</b> members add honge:</p>`+rows.map(r=>`<div style="padding-left:${r.dep*16}px">${r.gender=='F'?'👩':'👨'} ${esc(r.name)}${r.dead?' †':''}${have.has(r.name.toLowerCase())?' ⚠️ is naam ka member pehle se hai':''}</div>`).join('');
+ $('go').disabled=!rows.length||p.err.length>0}
+async function addAll(){if(!rows.length||!confirm(rows.length+' members add karein?'))return;$('go').disabled=true;let n=0;
+ for(const r of rows){const {dep,...m}=r;const x=await apiJ(API,{...C,op:'upsert',member:m});
+  if(x.s!=200){$('pv').innerHTML=`<div class="note">${n} add hue, phir ruk gaya: ${esc(why(x))}</div>`;return}
+  n++;$('pv').textContent='Add ho rahe hain... '+n+' / '+rows.length}
+ $('pv').innerHTML=`<div class="note">✅ ${n} members add ho gaye. <a href="admin-members.html">Members dekhein</a></div>`;$('tx').value='';rows=[]}
+</script></body></html>

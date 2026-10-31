@@ -2,10 +2,11 @@
 <div id="hdr"></div><main>
 <div class="note">Master password Vercel ke <b>ADMIN_PASSWORD</b> mein hai (wahan se badlein aur Redeploy karein). Yahan doosre logon ke alag login banayein.</div>
 <div class="box"><h3>🔑 Admin accounts</h3><table id="ut"></table></div>
-<div class="box"><h3>Naya account / password badlein</h3><input id="nu" placeholder="Username (a-z, 0-9, _)" autocapitalize="none"><input id="np" type="password" placeholder="Password (kam az kam 6 harf)"><button class="btn g" onclick="addU()">Save account</button></div></main>
+<div class="box"><h3>Naya account / password badlein</h3><input id="nu" placeholder="Username (a-z, 0-9, _)" autocapitalize="none" autocomplete="off"><input id="np" type="password" placeholder="Password (kam az kam 6 harf)" autocomplete="new-password">
+<label class="row"><input type="checkbox" id="nd"> Is account ko delete / import ki ijazat na ho (Editor)</label><button class="btn g" onclick="addU()">Save account</button></div></main>
 <script src="common.js"></script><script src="admin.js"></script><script>
 let C;adminInit('admin-accounts.html',true).then(a=>{if(a){C=a.C;users()}});
-async function users(){const r=await apiJ('/api/users',{...C,action:'list'});ut.innerHTML=(r.j||[]).map(u=>`<tr><td>👤 ${esc(u)}</td><td><button class="btn r" onclick="delU('${esc(u)}')">Del</button></td></tr>`).join('')||'<tr><td>Abhi koi account nahi</td></tr>'}
-async function addU(){const r=await apiJ('/api/users',{...C,action:'save',username:nu.value,userPassword:np.value});if(r.s==200){nu.value=np.value='';users()}else alert((r.j&&r.j.error)||'Nahi hua ('+r.s+')')}
+async function users(){const r=await apiJ('/api/users',{...C,action:'list'});ut.innerHTML=(r.j||[]).map(u=>`<tr><td>👤 ${esc(u.username)} <small>${u.editor?'(Editor)':'(Admin)'}</small></td><td><button class="btn r" onclick="delU('${esc(u.username)}')">Del</button></td></tr>`).join('')||'<tr><td>Abhi koi account nahi</td></tr>'}
+async function addU(){const r=await apiJ('/api/users',{...C,action:'save',username:nu.value,userPassword:np.value,noDelete:nd.checked});if(r.s==200){nu.value=np.value='';nd.checked=false;users()}else alert((r.j&&r.j.error)||'Nahi hua ('+r.s+')')}
 async function delU(u){if(!confirm(u+' ka account delete karein?'))return;await apiJ('/api/users',{...C,action:'delete',username:u});users()}
 </script></body></html>
