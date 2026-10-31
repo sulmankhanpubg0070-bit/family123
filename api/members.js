@@ -18,21 +18,32 @@ function clean(m) {
     gender: m.gender === 'F' ? 'F' : 'M', dob: str(m.dob, 10), phone: str(m.phone, 30),
     spouse: str(m.spouse, 80), dead: !!m.dead
   };
-  // Photo sirf tab badalti hai jab nayi bheji jaye
+  if (m.sibOf !== undefined) o.sibOf = num(m.sibOf); // bhai/behen: kis member ke saath dikhna hai
   if (typeof m.photo === 'string' && m.photo.startsWith('data:image/') && m.photo.length < 30000) { o.photo = m.photo; o.pv = Date.now(); }
   return o;
 }
-// List mein tasveer ka data nahi jata (site tez rehti hai), sirf hasPhoto
+// Admin ke liye poora data (tasveer ka data nahi, sirf hasPhoto)
 const pipe = proj => [{ $addFields: { hasPhoto: { $gt: [{ $strLenCP: { $ifNull: ['$photo', ''] } }, 0] } } }, { $project: proj }];
-// Server ka token 12 ghante chalta hai; 3 ghante ki hadd browser lagata hai (kaam beech mein na ruke)
+// Public list: female members ka naam aadha (Ai***), tasveer aur tareekh-e-paidaish chhupi; male ki biwi ka naam bhi aadha
+const mask = s => ({ $concat: [{ $substrCP: [s, 0, 2] }, '***'] });
+const isF = { $eq: ['$gender', 'F'] };
+const PUB = [
+  { $addFields: {
+    masked: isF,
+    hasPhoto: { $and: [{ $not: [isF] }, { $gt: [{ $strLenCP: { $ifNull: ['$photo', ''] } }, 0] }] },
+    name: { $cond: [isF, mask('$name'), '$name'] },
+    dob: { $cond: [isF, '', { $ifNull: ['$dob', ''] }] },
+    spouse: { $cond: [{ $and: [{ $not: [isF] }, { $gt: [{ $strLenCP: { $ifNull: ['$spouse', ''] } }, 0] }] }, mask('$spouse'), { $ifNull: ['$spouse', ''] }] }
+  } },
+  { $project: { photo: 0, phone: 0 } }
+];
 const TOKEN_MS = 12 * 3600e3;
 
 export default async function handler(req, res) {
   try {
     const d = await db(), c = d.collection('family_members'), tr = d.collection('trash');
     if ((await c.countDocuments()) === 0) await c.insertMany(SAMPLE);
-    // Public list: phone aur photo data ke baghair
-    if (req.method === 'GET') return res.status(200).json(await c.aggregate(pipe({ photo: 0, phone: 0 })).toArray());
+    if (req.method === 'GET') return res.status(200).json(await c.aggregate(PUB).toArray());
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     const b = req.body || {}, role = await gate(d, b, req, res);
@@ -44,6 +55,10 @@ export default async function handler(req, res) {
       case 'ping': return res.status(200).json({ ok: 1, role, user: b.user || '' });
       case 'login': return res.status(200).json({ ok: 1, role, user: b.user || '', token: sign({ u: b.user || '', exp: Date.now() + TOKEN_MS }) });
       case 'list': return res.status(200).json(await c.aggregate(pipe({ photo: 0 })).toArray());
+      case 'reveal': { // password ke baad ek member ki poori maloomat (phone ke baghair)
+        const r = await c.aggregate([{ $match: { id } }, ...pipe({ photo: 0, phone: 0 })]).toArray();
+        return r[0] ? res.status(200).json(r[0]) : res.status(404).json({ error: 'Nahi mila' });
+      }
       case 'upsert': {
         const m = clean(b.member);
         if (!m) return res.status(400).json({ error: 'Member ka data sahi nahi' });
@@ -59,6 +74,7 @@ export default async function handler(req, res) {
         await c.deleteOne({ id });
         await c.updateMany({ father: id }, { $set: { father: null } });
         await c.updateMany({ mother: id }, { $set: { mother: null } });
+        await c.updateMany({ sibOf: id }, { $set: { sibOf: null } });
         await log(d, who, 'delete', m.name);
         return res.status(200).json({ ok: 1 });
       }
