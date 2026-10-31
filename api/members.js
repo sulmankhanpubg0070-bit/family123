@@ -24,6 +24,8 @@ function clean(m) {
 }
 // List mein tasveer ka data nahi jata (site tez rehti hai), sirf hasPhoto
 const pipe = proj => [{ $addFields: { hasPhoto: { $gt: [{ $strLenCP: { $ifNull: ['$photo', ''] } }, 0] } } }, { $project: proj }];
+// Server ka token 12 ghante chalta hai; 3 ghante ki hadd browser lagata hai (kaam beech mein na ruke)
+const TOKEN_MS = 12 * 3600e3;
 
 export default async function handler(req, res) {
   try {
@@ -40,7 +42,7 @@ export default async function handler(req, res) {
 
     switch (b.op) {
       case 'ping': return res.status(200).json({ ok: 1, role, user: b.user || '' });
-      case 'login': return res.status(200).json({ ok: 1, role, user: b.user || '', token: sign({ u: b.user || '', exp: Date.now() + 7 * 864e5 }) });
+      case 'login': return res.status(200).json({ ok: 1, role, user: b.user || '', token: sign({ u: b.user || '', exp: Date.now() + TOKEN_MS }) });
       case 'list': return res.status(200).json(await c.aggregate(pipe({ photo: 0 })).toArray());
       case 'upsert': {
         const m = clean(b.member);

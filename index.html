@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="style.css"><link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
 <style>.tg{cursor:pointer;background:var(--green);color:#fff;border-radius:50%;width:24px;height:24px;line-height:22px;text-align:center;margin-top:4px;font-size:16px;user-select:none}.h .tg{margin:0 0 0 4px}#wrap{touch-action:pan-x pan-y}</style></head><body>
 <div id="hdr"></div><main>
-<div class="hero"><h2 id="hn">Family Shajra</h2><p id="ht">Hamari family ka shajra</p></div>
 <div class="chips" id="bd"></div>
 <select id="root"></select><input id="sr" placeholder="🔍 Naam se search karein">
 <div class="bar"><button class="btn w" id="zo">−</button><button class="btn w" id="zr">⟳</button><button class="btn w" id="zi">+</button>
@@ -17,7 +16,6 @@ header('home');
 const $=i=>document.getElementById(i),z=$('zoom'),sel=$('root'),EM='<div class="empty">فیملی دیکھنے کے لیے اوپر سے کوئی رُوٹ (بنیادی ممبر) منتخب کریں۔</div>';
 let data=[],s=1,hor=false,hit=null,closed=new Set(),pd=0;
 const byId=i=>data.find(x=>x.id==i),img=m=>m.hasPhoto?`/api/photo?id=${m.id}&v=${m.pv||0}`:(m.photo||'');
-loadSettings().then(t=>{$('hn').textContent=t.siteName;if(t.tagline)$('ht').textContent=t.tagline});
 load().then(d=>{data=d;sel.innerHTML='<option value="">-- Root member select karein --</option>'+d.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join('');birthdays();draw();fromHash()});
 function top(m){let r=m;while(r.father){const p=byId(r.father);if(!p)break;r=p}return r}
 function focusOn(m){sel.value=top(m).id;hit=m.id;let p=byId(m.father);while(p){closed.delete(p.id);p=byId(p.father)}draw();const c=z.querySelector('.hit');if(c)c.scrollIntoView({block:'center',inline:'center'})}
